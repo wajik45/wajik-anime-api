@@ -7,8 +7,8 @@ import {
    search,
    streamingAnime,
    streamingMovie,
-} from "./src/controllers/index.mjs";
-import { BASEURL, errorHandler, PORT } from "./src/helpers/index.mjs";
+} from "./controllers/index.mjs";
+import { BASEURL, errorHandler, PORT } from "./helpers/index.mjs";
 
 const app = express();
 app.use(cors());

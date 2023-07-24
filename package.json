@@ -5,8 +5,8 @@
    "main": "index.mjs",
    "type": "module",
    "scripts": {
-      "start": "node index.mjs",
-      "dev": "nodemon index.mjs",
+      "start": "node src/index.mjs",
+      "dev": "nodemon src/index.mjs",
       "test": "echo \"Error: no test specified\" && exit 1"
    },
    "keywords": [],
