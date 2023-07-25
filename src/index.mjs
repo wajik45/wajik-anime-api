@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
          complete: "/complete",
          genreList: "/genre",
          genre: "/genre/:slug",
-         search: "/search/keyword",
+         search: "/search?query",
          animeDetail: "/anime/:slug",
          streamingAnime: "/anime/:slug/:episode",
          streamingMovie: "/movie/:slug",
@@ -104,11 +104,11 @@ app.get("/genre/:slug", async (req, res) => {
       res.status(500).json(err);
    }
 });
-app.get("/search/:keyword", async (req, res) => {
-   const { keyword } = req.params;
+app.get("/search", async (req, res) => {
+   const { query } = req.query;
    const { page } = req.query;
    try {
-      const data = await search(keyword, page);
+      const data = await search(query, page);
       if (data.list.length < 1) throw new Error("Anime not found");
       res.status(200).json(data);
    } catch (error) {

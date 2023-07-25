@@ -2,10 +2,9 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import { BASEURL } from "../helpers/base-url.mjs";
 
-export const search = async (keyword, page = 1) => {
-   const response = await axios.get(`${BASEURL}/page/${page}?s=${keyword}`);
+export const search = async (query, page = 1) => {
+   const response = await axios.get(`${BASEURL}/page/${page}?s=${query}`);
    const $ = cheerio.load(response.data);
-   const currentPage = $(".pagin .page-numbers.current.active").text();
    const maxPage = $(".pagin .page-numbers:not(.prev,.next,.dots):last")
       .text()
       .replace(/,| /g, "");
