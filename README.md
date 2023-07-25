@@ -41,3 +41,34 @@ npm start
 | /anime/:slug          | :slug           | Anime details              |
 | /anime/:slug/:episode | :slug, :episode | Streaming & Download Anime |
 | /movie/:slug          | :slug           | Streaming & Download Movie |
+
+### Contoh request
+
+```js
+// request
+(async () => {
+   const res = await fetch("http://localhost:3002/movie/?page=3");
+   const data = await res.json();
+   console.log(data);
+})();
+
+// response
+{
+    "statusCode": number,
+    "currentPage": number,
+    "maxPage": number,
+    "list": [
+        {
+            "url": string,
+            "slug": string,
+            "title": string,
+            "poster": string,
+            "star": string,
+            "type": string
+        },
+        {
+            ...
+        }
+    ]
+}
+```
