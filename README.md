@@ -47,7 +47,7 @@ npm start
 ```js
 // request
 (async () => {
-   const res = await fetch("http://localhost:3002/movie/?page=3");
+   const res = await fetch("http://localhost:3002/search/?query=naruto&page=2");
    const data = await res.json();
    console.log(data);
 })();

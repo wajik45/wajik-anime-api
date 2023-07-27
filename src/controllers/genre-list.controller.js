@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { BASEURL } from "../helpers/base-url.mjs";
+import { BASEURL } from "../helpers/base-url.js";
 
 export const genreList = async () => {
    const response = await axios.get(`${BASEURL}/home`);

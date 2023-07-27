@@ -1,15 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { BASEURL } from "../helpers/base-url.mjs";
+import { BASEURL } from "../helpers/base-url.js";
 
-export const streamingAnime = async (slug, eps) => {
-   const episode =
-      eps > 9999
-         ? `00${eps}`.slice(-5)
-         : eps > 999
-         ? `00${eps}`.slice(-4)
-         : `00${eps}`.slice(-3);
-   const url = `${BASEURL}/episode/${slug}-episode-${episode}`;
+export const streamingMovie = async (slug) => {
+   const url = `${BASEURL}/movie/${slug}`;
    const response = await axios.get(url);
    const $ = cheerio.load(response.data);
    const title = $(".anis-watch-detail h2.film-name a").text();
@@ -17,12 +11,6 @@ export const streamingAnime = async (slug, eps) => {
    const poster = $(".anis-watch-detail .anisc-poster .film-poster img").attr(
       "data-src"
    );
-   const currentEpisodes = eps;
-   const currentTotalEpisodes = $(
-      ".detail-infor-content #episodes-page-1 a.ssl-item.ep-item:first"
-   )
-      .text()
-      .replace(/ |\n|\t/g, "");
    const item = $(".anis-watch-detail .film-stats .item")
       .append(",")
       .text()
@@ -32,8 +20,8 @@ export const streamingAnime = async (slug, eps) => {
    $(".player-servers:not(.download-servers) .ps_-block .ps__-list .item").each(
       (i, el) => {
          videoPlayer.push({
-            url: $(el).find("a").attr("href") + "&autoplay=true",
-            quality: $(el)
+            url: $(el).find("a").attr("href"),
+            kualitas: $(el)
                .find("a")
                .text()
                .slice(-7)
@@ -52,7 +40,7 @@ export const streamingAnime = async (slug, eps) => {
    ).each((i, el) => {
       downloadLink.push({
          url: $(el).find("a.btn").attr("href"),
-         quality: $(el)
+         kualitas: $(el)
             .find("a")
             .text()
             .slice(-7)
@@ -70,8 +58,6 @@ export const streamingAnime = async (slug, eps) => {
       title,
       description,
       poster,
-      currentEpisodes: ~~currentEpisodes,
-      currentTotalEpisodes: ~~currentTotalEpisodes,
       status: item[0],
       year: ~~item[1],
       type: item[2],
