@@ -1,5 +1,5 @@
-import { BASEURL } from "./base-url.js";
-import { errorHandler } from "./error-handler.js";
-import { PORT } from "./port.js";
+import BASEURL from "./BASEURL.js";
+import PORT from "./port.js";
+import errorHandler from "./errorHandler.js";
 
 export { BASEURL, errorHandler, PORT };
