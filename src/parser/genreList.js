@@ -22,8 +22,7 @@ const genreList = async () => {
       item.title !== "Boys Love" &&
       item.title !== "Yaoi" &&
       item.title !== "Gender Bender" &&
-      item.title !== "Shounen Ai" &&
-      item.title !== "Romance"
+      item.title !== "Shounen Ai"
     );
   });
   const data = {
