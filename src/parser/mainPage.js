@@ -23,7 +23,9 @@ const mainPage = async (pathName, page = 1) => {
       poster,
       star,
     };
-    pathName.includes("movie") || pathName.includes("search")
+    pathName.includes("movie") ||
+    pathName.includes("search") ||
+    pathName.includes("genre")
       ? (dataList.type = episodeOrType)
       : (dataList.episode = episodeOrType);
 
