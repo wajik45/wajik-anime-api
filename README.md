@@ -8,7 +8,7 @@ https://zoronime.com
 
 # Installasi
 
--  Jalankan perintah di terminal
+- Jalankan perintah di terminal
 
 ```sh
 # clone repo
@@ -24,7 +24,7 @@ npm install
 npm start
 ```
 
--  Server akan berjalan di http://localhost:3002
+- Server akan berjalan di http://localhost:3002
 
 # Routes
 
@@ -34,7 +34,7 @@ npm start
 | /anime                | page            | default page: 1            |
 | /movie                | page            | default page: 1            |
 | /ongoing              | page            | default page: 1            |
-| /complete             | page            | default page: 1            |
+| /completed            | page            | default page: 1            |
 | /genre                | -               | Genre List                 |
 | /genre/:slug          | :slug, page     | default page: 1            |
 | /search               | query, page     | default page: 1            |
@@ -72,3 +72,7 @@ npm start
     ]
 }
 ```
+
+### contoh menggunakan react
+
+https://wajik-anime.vercel.app
