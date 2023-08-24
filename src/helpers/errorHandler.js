@@ -7,10 +7,12 @@ export const errorHandler = (error) => {
       details: error,
     };
   }
+
   return {
     statusCode: error.response.status,
     error: error.name,
     message: error.message,
   };
 };
+
 export default errorHandler;

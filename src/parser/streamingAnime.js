@@ -4,31 +4,32 @@ import { BASEURL } from "../helpers/index.js";
 
 const streamingAnime = async (slug, eps) => {
   const episode =
-    eps > 9999
-      ? `00${eps}`.slice(-5)
-      : eps > 999
-      ? `00${eps}`.slice(-4)
-      : `00${eps}`.slice(-3);
-  const url = `${BASEURL}/episode/${slug}-episode-${episode}`;
-  const response = await axios.get(url);
-  const $ = cheerio.load(response.data);
-  const title = $(".anis-watch-detail h2.film-name a").text();
-  const description = $(".anis-watch-detail .film-description .text").text();
-  const poster = $(".anis-watch-detail .anisc-poster .film-poster img").attr(
-    "data-src"
-  );
-  const currentEpisodes = eps;
-  const currentTotalEpisodes = $(
-    ".detail-infor-content #episodes-page-1 a.ssl-item.ep-item:first"
-  )
-    .text()
-    .replace(/ |\n|\t/g, "");
-  const item = $(".anis-watch-detail .film-stats .item")
-    .append(",")
-    .text()
-    .split(",");
-  const videoPlayer = [];
-  const downloadLink = [];
+      eps > 9999
+        ? `00${eps}`.slice(-5)
+        : eps > 999
+        ? `00${eps}`.slice(-4)
+        : `00${eps}`.slice(-3),
+    url = `${BASEURL}/episode/${slug}-episode-${episode}`,
+    response = await axios.get(url),
+    $ = cheerio.load(response.data),
+    title = $(".anis-watch-detail h2.film-name a").text(),
+    description = $(".anis-watch-detail .film-description .text").text(),
+    poster = $(".anis-watch-detail .anisc-poster .film-poster img").attr(
+      "data-src"
+    ),
+    currentEpisodes = eps,
+    currentTotalEpisodes = $(
+      ".detail-infor-content #episodes-page-1 a.ssl-item.ep-item:first"
+    )
+      .text()
+      .replace(/ |\n|\t/g, ""),
+    item = $(".anis-watch-detail .film-stats .item")
+      .append(",")
+      .text()
+      .split(","),
+    videoPlayer = [],
+    downloadLink = [];
+
   $(".player-servers:not(.download-servers) .ps_-block .ps__-list .item").each(
     (i, el) => {
       videoPlayer.push({
@@ -47,6 +48,7 @@ const streamingAnime = async (slug, eps) => {
       });
     }
   );
+
   $(
     ".player-servers.download-servers .ps_-block.ps_-block-sub.servers-mixed .ps__-list .item"
   ).each((i, el) => {
@@ -64,6 +66,7 @@ const streamingAnime = async (slug, eps) => {
         .slice(0, $(el).find("a.btn").length - 8),
     });
   });
+
   const data = {
     statusCode: 200,
     url,
@@ -78,6 +81,7 @@ const streamingAnime = async (slug, eps) => {
     videoPlayer,
     downloadLink,
   };
+
   return data;
 };
 

@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", controllers.wajikAnimeApi);
 router.get("/home", controllers.getHome);
 router.get("/ongoing", controllers.getOnGoing);
-router.get("/complete", controllers.getComplete);
+router.get("/completed", controllers.getCompleted);
 router.get("/anime", controllers.getAnime);
 router.get("/movie", controllers.getMovie);
 router.get("/genre", controllers.getGenre);

@@ -3,20 +3,21 @@ import * as cheerio from "cheerio";
 import { BASEURL } from "../helpers/index.js";
 
 const streamingMovie = async (slug) => {
-  const url = `${BASEURL}/movie/${slug}`;
-  const response = await axios.get(url);
-  const $ = cheerio.load(response.data);
-  const title = $(".anis-watch-detail h2.film-name a").text();
-  const description = $(".anis-watch-detail .film-description .text").text();
-  const poster = $(".anis-watch-detail .anisc-poster .film-poster img").attr(
-    "data-src"
-  );
-  const item = $(".anis-watch-detail .film-stats .item")
-    .append(",")
-    .text()
-    .split(",");
-  const videoPlayer = [];
-  const downloadLink = [];
+  const url = `${BASEURL}/movie/${slug}`,
+    response = await axios.get(url),
+    $ = cheerio.load(response.data),
+    title = $(".anis-watch-detail h2.film-name a").text(),
+    description = $(".anis-watch-detail .film-description .text").text(),
+    poster = $(".anis-watch-detail .anisc-poster .film-poster img").attr(
+      "data-src"
+    ),
+    item = $(".anis-watch-detail .film-stats .item")
+      .append(",")
+      .text()
+      .split(","),
+    videoPlayer = [],
+    downloadLink = [];
+
   $(".player-servers:not(.download-servers) .ps_-block .ps__-list .item").each(
     (i, el) => {
       videoPlayer.push({
@@ -35,6 +36,7 @@ const streamingMovie = async (slug) => {
       });
     }
   );
+
   $(
     ".player-servers.download-servers .ps_-block.ps_-block-sub.servers-mixed .ps__-list .item"
   ).each((i, el) => {
@@ -52,6 +54,7 @@ const streamingMovie = async (slug) => {
         .slice(0, $(el).find("a.btn").length - 8),
     });
   });
+
   const data = {
     statusCode: 200,
     url,
@@ -64,6 +67,7 @@ const streamingMovie = async (slug) => {
     videoPlayer,
     downloadLink,
   };
+
   return data;
 };
 
