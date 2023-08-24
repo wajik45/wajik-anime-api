@@ -30,9 +30,8 @@ const mainPage = async (pathName, page = 1) => {
       : (dataList.type = episodeOrType);
 
     list.push(dataList);
-
-    console.log(pathName);
   });
+
   const data = {
     statusCode: 200,
     currentPage: ~~page,
