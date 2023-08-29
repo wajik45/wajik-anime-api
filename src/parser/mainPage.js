@@ -1,9 +1,12 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { BASEURL } from "../helpers/index.js";
+import { BASEURL, chunkArray } from "../helpers/index.js";
 
-const mainPage = async (pathName, page = 1) => {
-  const response = await axios.get(`${BASEURL}${pathName}${page}`),
+const mainPage = async (pathName, page = "51") => {
+  const URL = `${BASEURL}${pathName}${
+      ~~page % 2 == 0 ? Math.ceil(~~page / 2) - 1 : Math.ceil(~~page / 2)
+    }`,
+    response = await axios.get(URL),
     $ = cheerio.load(response.data),
     maxPage = $(".pagin .page-numbers:not(.prev,.next,.dots):last")
       .text()
@@ -35,8 +38,8 @@ const mainPage = async (pathName, page = 1) => {
   const data = {
     statusCode: 200,
     currentPage: ~~page,
-    maxPage: ~~maxPage === 0 ? 1 : ~~maxPage,
-    list,
+    maxPage: ~~maxPage === 0 ? 1 : ~~maxPage * 2,
+    list: ~~page % 2 == 0 ? chunkArray(list, 2)[1] : chunkArray(list, 2)[0],
   };
 
   if (~~page < 1) throw new Error("Page not found");
