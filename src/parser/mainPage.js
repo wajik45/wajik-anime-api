@@ -2,7 +2,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import { BASEURL, chunkArray } from "../helpers/index.js";
 
-const mainPage = async (pathName, page = "51") => {
+const mainPage = async (pathName, page = "1") => {
   const URL = `${BASEURL}${pathName}${
       ~~page % 2 == 0 ? Math.ceil(~~page / 2) - 1 : Math.ceil(~~page / 2)
     }`,
