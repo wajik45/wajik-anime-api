@@ -109,7 +109,7 @@ const OtakudesuController = {
           },
         },
         batchUrl: {
-          route: "/batch/:slug",
+          route: "/otakudesu/batch/:slug",
           parameters: {
             routeParam: {
               parameter: ":slug",
@@ -503,6 +503,7 @@ const OtakudesuController = {
     }
   },
 
+  // EPISODE LISTNYA CUII
   async getAnimeByEpisode(req: Request, res: Response) {
     const { slug } = req.params;
     const route = `/episode/${slug}`;
@@ -543,6 +544,7 @@ const OtakudesuController = {
     }
   },
 
+  // PARSERNYA CUYY
   async getBatch(req: Request, res: Response) {
     try {
       res.status(200).json(
