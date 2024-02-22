@@ -4,7 +4,11 @@ Streaming dan download Anime subtitle Indonesia
 
 # Sumber:
 
-https://zoronime.com
+MOHON IZIN ABANG SUMBER, sumber bisa bertambah, bisa dm rekomendasi situs yang bagus
+
+- https://otakudesu.cloud
+
+domain sering berubah 2 jangan lupa pantau terus
 
 # Installasi
 
@@ -24,55 +28,48 @@ npm install
 npm start
 ```
 
-- Server akan berjalan di http://localhost:3002
+- Server akan berjalan di http://localhost:3001
 
 # Routes
 
-| Endpoint              | Params          | Description                |
-| --------------------- | --------------- | -------------------------- |
-| /home                 | page            | default page: 1            |
-| /anime                | page            | default page: 1            |
-| /movie                | page            | default page: 1            |
-| /ongoing              | page            | default page: 1            |
-| /completed            | page            | default page: 1            |
-| /genre                | -               | Genre List                 |
-| /genre/:slug          | :slug, page     | default page: 1            |
-| /search               | query, page     | default page: 1            |
-| /anime/:slug          | :slug           | Anime details              |
-| /anime/:slug/:episode | :slug, :episode | Streaming & Download Anime |
-| /movie/:slug          | :slug           | Streaming & Download Movie |
+| Endpoint  | Params | Description                                                 |
+| --------- | ------ | ----------------------------------------------------------- |
+| /{source} |        | Deskripsi rute ada di response jangan lupa pake JSON viewer |
 
 ### Contoh request
 
 ```js
-// request
 (async () => {
-   const res = await fetch("http://localhost:3002/search/?query=naruto&page=2");
-   const data = await res.json();
-   console.log(data);
-})();
+  const response = await fetch("http://localhost:3001/otakudesu/ongoing");
+  const result = await response.json();
 
-// response
-{
-    "statusCode": number,
-    "currentPage": number,
-    "maxPage": number,
-    "list": [
-        {
-            "url": string,
-            "slug": string,
-            "title": string,
-            "poster": string,
-            "star": string,
-            "type": string
-        },
-        {
-            ...
-        }
-    ]
-}
+  console.log(result);
+})();
 ```
 
-### contoh menggunakan react
+### Contoh response
 
-https://wajik-anime.vercel.app
+```json
+{
+  "statusCode": 200,
+  "message": "Ok",
+  "data": [
+    {
+      "judul": "Dr. Stone Season 3 Part 2",
+      "slug": "drstn-s3-p2-sub-indo",
+      "poster": "https://otakudesu.cloud/wp-content/uploads/2024/01/Dr.-Stone-Season-3-Part-2-Sub-Indo.jpg",
+      "episodeTerbaru": "11",
+      "hariRilis": "Jum'at",
+      "tanggalRilisTerbaru": "05 Jan",
+      "otakudesuUrl": "https://otakudesu.cloud/anime/drstn-s3-p2-sub-indo/"
+    }
+  ],
+  "pagination": {
+    "prevPage": false,
+    "currentPage": 1,
+    "nextPage": 2,
+    "totalPages": 4
+  },
+  "error": false
+}
+```
