@@ -1,5 +1,5 @@
 import type { CheerioAPI } from "cheerio";
-import type { IGenre } from "../interfaces/IOtakudesu";
+import type { IGenre, IList } from "../interfaces/IOtakudesu";
 import getSlug from "../../../helpers/getSlug";
 
 export default function parseGenreCard($: CheerioAPI) {
@@ -18,10 +18,11 @@ export default function parseGenreCard($: CheerioAPI) {
     const poster =
       $(element).find(".col-anime-cover img").attr("src") || "Unknown";
     const sinopsis: string[] = [];
-    const genres: { judul: string; slug: string; otakudesuUrl: string }[] = [];
+    const genres: IList[] = [];
     const otakudesuUrl =
       $(element).find(".col-anime-title a").attr("href") || "Unknown";
     const slug = getSlug(otakudesuUrl);
+    const href = "/otakudesu/anime/" + slug;
 
     $(element)
       .find(".col-synopsis p")
@@ -37,10 +38,12 @@ export default function parseGenreCard($: CheerioAPI) {
         const judul = $(element).text();
         const otakudesuUrl = $(element).attr("href") || "Unknown";
         const slug = getSlug(otakudesuUrl);
+        const href = "/otakudesu/genres/" + slug;
 
         genres.push({
           judul,
           slug,
+          href,
           otakudesuUrl,
         });
       });
@@ -48,6 +51,7 @@ export default function parseGenreCard($: CheerioAPI) {
     data.push({
       judul,
       slug,
+      href,
       poster,
       rating,
       jumlahEpisode,

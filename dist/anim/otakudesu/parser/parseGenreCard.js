@@ -21,6 +21,7 @@ function parseGenreCard($) {
         const genres = [];
         const otakudesuUrl = $(element).find(".col-anime-title a").attr("href") || "Unknown";
         const slug = (0, getSlug_1.default)(otakudesuUrl);
+        const href = "/otakudesu/anime/" + slug;
         $(element)
             .find(".col-synopsis p")
             .each((index, element) => {
@@ -34,15 +35,18 @@ function parseGenreCard($) {
             const judul = $(element).text();
             const otakudesuUrl = $(element).attr("href") || "Unknown";
             const slug = (0, getSlug_1.default)(otakudesuUrl);
+            const href = "/otakudesu/genres/" + slug;
             genres.push({
                 judul,
                 slug,
+                href,
                 otakudesuUrl,
             });
         });
         data.push({
             judul,
             slug,
+            href,
             poster,
             rating,
             jumlahEpisode,

@@ -142,6 +142,7 @@ const OtakudesuController = {
               const onGoing: IOnGoing = {
                 judul: card.judul,
                 slug: card.slug,
+                href: "/otakudesu/anime/" + card.slug,
                 poster: card.poster,
                 episodeTerbaru: card.episode,
                 hariRilis: card.ratingAtauHari,
@@ -155,6 +156,7 @@ const OtakudesuController = {
             const completed: ICompleted = {
               judul: card.judul,
               slug: card.slug,
+              href: "/otakudesu/anime/" + card.slug,
               poster: card.poster,
               jumlahEpisode: card.episode,
               rating: card.ratingAtauHari,
@@ -213,6 +215,7 @@ const OtakudesuController = {
         data.push({
           judul: card.judul,
           slug: card.slug,
+          href: "/otakudesu/anime/" + card.slug,
           poster: card.poster,
           jumlahEpisode: card.episode,
           rating: card.ratingAtauHari,
@@ -268,6 +271,7 @@ const OtakudesuController = {
         data.push({
           judul: card.judul,
           slug: card.slug,
+          href: "/otakudesu/anime/" + card.slug,
           poster: card.poster,
           episodeTerbaru: card.episode,
           hariRilis: card.ratingAtauHari,
@@ -503,7 +507,6 @@ const OtakudesuController = {
     }
   },
 
-  // EPISODE LISTNYA CUII
   async getAnimeByEpisode(req: Request, res: Response) {
     const { slug } = req.params;
     const route = `/episode/${slug}`;

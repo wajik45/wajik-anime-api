@@ -11,9 +11,11 @@ function parseGenreList($) {
         const judul = $(element).text();
         const otakudesuUrl = animeUrl_1.default.otakudesu + $(element).attr("href");
         const slug = (0, getSlug_1.default)(otakudesuUrl);
+        const href = "/otakudesu/genres/" + slug;
         data.push({
             judul,
             slug,
+            href,
             otakudesuUrl,
         });
     });

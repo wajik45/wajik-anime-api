@@ -101,7 +101,7 @@ const OtakudesuController = {
                     },
                 },
                 batchUrl: {
-                    route: "/batch/:slug",
+                    route: "/otakudesu/batch/:slug",
                     parameters: {
                         routeParam: {
                             parameter: ":slug",
@@ -128,6 +128,7 @@ const OtakudesuController = {
                         const onGoing = {
                             judul: card.judul,
                             slug: card.slug,
+                            href: "/otakudesu/anime/" + card.slug,
                             poster: card.poster,
                             episodeTerbaru: card.episode,
                             hariRilis: card.ratingAtauHari,
@@ -139,6 +140,7 @@ const OtakudesuController = {
                     const completed = {
                         judul: card.judul,
                         slug: card.slug,
+                        href: "/otakudesu/anime/" + card.slug,
                         poster: card.poster,
                         jumlahEpisode: card.episode,
                         rating: card.ratingAtauHari,
@@ -182,6 +184,7 @@ const OtakudesuController = {
                 data.push({
                     judul: card.judul,
                     slug: card.slug,
+                    href: "/otakudesu/anime/" + card.slug,
                     poster: card.poster,
                     jumlahEpisode: card.episode,
                     rating: card.ratingAtauHari,
@@ -223,6 +226,7 @@ const OtakudesuController = {
                 data.push({
                     judul: card.judul,
                     slug: card.slug,
+                    href: "/otakudesu/anime/" + card.slug,
                     poster: card.poster,
                     episodeTerbaru: card.episode,
                     hariRilis: card.ratingAtauHari,
@@ -417,6 +421,7 @@ const OtakudesuController = {
             }));
         }
     },
+    // PARSERNYA CUYY
     async getBatch(req, res) {
         try {
             res.status(200).json((0, setPayload_1.default)(res, {

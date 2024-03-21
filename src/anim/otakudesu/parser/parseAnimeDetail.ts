@@ -5,7 +5,7 @@ import getDetail from "../../../helpers/getDetail";
 export default function parseAnimeDetail($: CheerioAPI) {
   const sinopsis: any[] = [];
   const episodeList: any[] = [];
-  const batchList: any[] = [];
+  const batch: any[] = [];
 
   const gaskenAdikAdik = (element: any, tipe: "episode" | "batch") => {
     $(element)
@@ -14,19 +14,22 @@ export default function parseAnimeDetail($: CheerioAPI) {
         const judul = $(element).find("a").text();
         const otakudesuUrl = $(element).find("a").attr("href") || "Unknown";
         const slug = getSlug(otakudesuUrl);
+        const href = `/otakudesu/${tipe}/` + slug;
         const tanggalRilis = $(element).find(".zeebr").text();
 
         if (tipe === "episode") {
           episodeList.push({
             judul,
             slug,
+            href,
             otakudesuUrl,
             tanggalRilis,
           });
         } else {
-          batchList.push({
+          batch.push({
             judul,
             slug,
+            href,
             otakudesuUrl,
             tanggalRilis,
           });
@@ -44,8 +47,8 @@ export default function parseAnimeDetail($: CheerioAPI) {
   });
 
   $(".episodelist").each((index, element) => {
+    if (index === 0) gaskenAdikAdik(element, "batch");
     if (index === 1) gaskenAdikAdik(element, "episode");
-    if (index === 2) gaskenAdikAdik(element, "batch");
   });
 
   return {
@@ -53,7 +56,7 @@ export default function parseAnimeDetail($: CheerioAPI) {
     poster,
     genres,
     sinopsis,
+    batch,
     episodeList,
-    batchList,
   };
 }

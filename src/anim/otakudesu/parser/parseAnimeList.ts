@@ -16,10 +16,12 @@ export default function parseAnimeList($: CheerioAPI) {
         const judul = $(element).find("a").text().trim();
         const otakudesuUrl = $(element).find("a").attr("href") || "Unknown";
         const slug = getSlug(otakudesuUrl);
+        const href = "/otakudesu/anime/" + slug;
 
         anime.push({
           judul,
           slug,
+          href,
           otakudesuUrl,
         });
       });

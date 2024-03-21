@@ -4,7 +4,12 @@ import getSlug from "./getSlug";
 
 export default function getDetail($: CheerioAPI, selectors: string) {
   const detail: any = {};
-  const genres: { judul: string; slug: string; otakudesuUrl: string }[] = [];
+  const genres: {
+    judul: string;
+    slug: string;
+    href: string;
+    otakudesuUrl: string;
+  }[] = [];
 
   $(selectors).each((index, element) => {
     let key = $(element).find("b").text();
@@ -25,10 +30,12 @@ export default function getDetail($: CheerioAPI, selectors: string) {
           const judul = $(element).text();
           const otakudesuUrl = $(element).attr("href") || "Unknown";
           const slug = getSlug(otakudesuUrl);
+          const href = "/otakudesu/genres/" + slug;
 
           genres.push({
             judul,
             slug,
+            href,
             otakudesuUrl,
           });
         });

@@ -11,6 +11,7 @@ export default function parseSearchCard($: CheerioAPI) {
     const poster = $(element).find("img").attr("src") || "Unknown";
     const otakudesuUrl = $(element).find("h2 a").attr("href") || "Unknown";
     const slug = getSlug(otakudesuUrl);
+    const href = "/otakudesu/anime/" + slug;
 
     const { detail, genres } = getDetail($, ".set");
 
@@ -19,6 +20,7 @@ export default function parseSearchCard($: CheerioAPI) {
       poster,
       ...detail,
       slug,
+      href,
       otakudesuUrl,
       genres,
     });

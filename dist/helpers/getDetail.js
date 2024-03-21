@@ -25,9 +25,11 @@ function getDetail($, selectors) {
                 const judul = $(element).text();
                 const otakudesuUrl = $(element).attr("href") || "Unknown";
                 const slug = (0, getSlug_1.default)(otakudesuUrl);
+                const href = "/otakudesu/genres/" + slug;
                 genres.push({
                     judul,
                     slug,
+                    href,
                     otakudesuUrl,
                 });
             });

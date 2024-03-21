@@ -1,6 +1,7 @@
 export interface IList {
   judul: string;
   slug: string;
+  href: string;
   otakudesuUrl: string;
 }
 
@@ -11,6 +12,7 @@ export interface IOnGoing {
   poster: string;
   otakudesuUrl: string;
   slug: string;
+  href: string;
   tanggalRilisTerbaru: string;
 }
 
@@ -21,6 +23,7 @@ export interface ICompleted {
   poster: string;
   otakudesuUrl: string;
   slug: string;
+  href: string;
   tanggalRilisTerakhir: string;
 }
 
@@ -47,12 +50,14 @@ export interface IAnimeList {
 export interface IGenreList {
   judul: string;
   slug: string;
+  href: string;
   otakudesuUrl: string;
 }
 
 export interface IGenre {
   judul: string;
   slug: string;
+  href: string;
   poster: string;
   studio: string;
   otakudesuUrl: string;

@@ -12,12 +12,14 @@ function parseSearchCard($) {
         const poster = $(element).find("img").attr("src") || "Unknown";
         const otakudesuUrl = $(element).find("h2 a").attr("href") || "Unknown";
         const slug = (0, getSlug_1.default)(otakudesuUrl);
+        const href = "/otakudesu/anime/" + slug;
         const { detail, genres } = (0, getDetail_1.default)($, ".set");
         data.push({
             judul,
             poster,
             ...detail,
             slug,
+            href,
             otakudesuUrl,
             genres,
         });

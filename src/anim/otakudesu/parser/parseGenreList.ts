@@ -10,10 +10,12 @@ export default function parseGenreList($: CheerioAPI) {
     const judul = $(element).text();
     const otakudesuUrl = animeUrl.otakudesu + $(element).attr("href");
     const slug = getSlug(otakudesuUrl);
+    const href = "/otakudesu/genres/" + slug;
 
     data.push({
       judul,
       slug,
+      href,
       otakudesuUrl,
     });
   });

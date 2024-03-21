@@ -8,7 +8,7 @@ const getDetail_1 = __importDefault(require("../../../helpers/getDetail"));
 function parseAnimeDetail($) {
     const sinopsis = [];
     const episodeList = [];
-    const batchList = [];
+    const batch = [];
     const gaskenAdikAdik = (element, tipe) => {
         $(element)
             .find("ul li")
@@ -16,19 +16,22 @@ function parseAnimeDetail($) {
             const judul = $(element).find("a").text();
             const otakudesuUrl = $(element).find("a").attr("href") || "Unknown";
             const slug = (0, getSlug_1.default)(otakudesuUrl);
+            const href = `/otakudesu/${tipe}/` + slug;
             const tanggalRilis = $(element).find(".zeebr").text();
             if (tipe === "episode") {
                 episodeList.push({
                     judul,
                     slug,
+                    href,
                     otakudesuUrl,
                     tanggalRilis,
                 });
             }
             else {
-                batchList.push({
+                batch.push({
                     judul,
                     slug,
+                    href,
                     otakudesuUrl,
                     tanggalRilis,
                 });
@@ -42,18 +45,18 @@ function parseAnimeDetail($) {
         sinopsis.push(sinopsisText);
     });
     $(".episodelist").each((index, element) => {
+        if (index === 0)
+            gaskenAdikAdik(element, "batch");
         if (index === 1)
             gaskenAdikAdik(element, "episode");
-        if (index === 2)
-            gaskenAdikAdik(element, "batch");
     });
     return {
         ...detail,
         poster,
         genres,
         sinopsis,
+        batch,
         episodeList,
-        batchList,
     };
 }
 exports.default = parseAnimeDetail;

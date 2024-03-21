@@ -15,9 +15,11 @@ function parseAnimeList($) {
             const judul = $(element).find("a").text().trim();
             const otakudesuUrl = $(element).find("a").attr("href") || "Unknown";
             const slug = (0, getSlug_1.default)(otakudesuUrl);
+            const href = "/otakudesu/anime/" + slug;
             anime.push({
                 judul,
                 slug,
+                href,
                 otakudesuUrl,
             });
         });
