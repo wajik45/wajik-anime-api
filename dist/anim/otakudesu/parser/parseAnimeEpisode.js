@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const getSlug_1 = __importDefault(require("../../../helpers/getSlug"));
 const getDetail_1 = __importDefault(require("../../../helpers/getDetail"));
 function parseAnimeEpisode($) {
-    const downloadUrl = {};
+    const downloadUrl = [];
     const episodeList = [];
     let episodeSebelumnya = null;
     let episodeSelanjutnya = null;
@@ -33,7 +33,12 @@ function parseAnimeEpisode($) {
     const streamingUrl = $(".responsive-embed-stream iframe").attr("src");
     $(".download ul li").each((index, element) => {
         const urls = [];
-        const kualitas = $(element).find("strong").text();
+        const kualitas = $(element)
+            .find("strong")
+            .text()
+            .trim()
+            .replace(/\ /g, "_");
+        const size = $(element).find("i").text();
         $(element)
             .find("a")
             .each((index, element) => {
@@ -44,7 +49,11 @@ function parseAnimeEpisode($) {
                 url,
             });
         });
-        downloadUrl["_" + kualitas] = urls;
+        downloadUrl.push({
+            kualitas,
+            urls,
+            size,
+        });
     });
     const { detail, genres } = (0, getDetail_1.default)($, ".infozingle p");
     $(".keyingpost li").each((index, element) => {

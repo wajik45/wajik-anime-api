@@ -16,12 +16,13 @@ const parseGenreList_1 = __importDefault(require("../parser/parseGenreList"));
 const parseGenreCard_1 = __importDefault(require("../parser/parseGenreCard"));
 const parseAnimeDetail_1 = __importDefault(require("../parser/parseAnimeDetail"));
 const parseAnimeEpisode_1 = __importDefault(require("../parser/parseAnimeEpisode"));
+const parseAnimeBatch_1 = __importDefault(require("../parser/parseAnimeBatch"));
 const OtakudesuController = {
     getMessage(req, res) {
         res.status(200).json({
-            message: "OTAKUDESU IS READY 🍌💦, IJIN BANG OTAKUDESU🙏🙏🙏, SERING PANTAU BOSKUU DOMAIN SERING BERUBAH BISA EDIT DI src/helpers/animeUrl.ts",
+            message: "OTAKUDESU IS READY 🍌💦, MOHON IJIN BANG OTAKUDESU🙏🙏🙏",
             otakudesuUrl: animeUrl_1.default.otakudesu,
-            method: "methodnya get semua ya broo",
+            method: "GET semua ya broo",
             routes: {
                 home: {
                     route: "/otakudesu/home",
@@ -100,7 +101,7 @@ const OtakudesuController = {
                         },
                     },
                 },
-                batchUrl: {
+                animeBatch: {
                     route: "/otakudesu/batch/:slug",
                     parameters: {
                         routeParam: {
@@ -421,11 +422,22 @@ const OtakudesuController = {
             }));
         }
     },
-    // PARSERNYA CUYY
     async getBatch(req, res) {
+        const { slug } = req.params;
+        const route = `/batch/${slug}`;
+        const htmlData = await (0, getHtmlData_1.default)({ url: animeUrl_1.default.otakudesu + route });
+        const $ = (0, cheerio_1.load)(htmlData);
+        const data = (0, parseAnimeBatch_1.default)($);
+        if (data.batchList.length === 0 && data.genres.length === 0) {
+            return res.status(404).json((0, setPayload_1.default)(res, {
+                message: "Not Found",
+                error: true,
+            }));
+        }
         try {
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "TES 123 SABAR BOSKUUH NGASOH DULU",
+                message: "Ok",
+                data: data,
             }));
         }
         catch (error) {

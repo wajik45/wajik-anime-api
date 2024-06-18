@@ -21,14 +21,14 @@ import parseGenreList from "../parser/parseGenreList";
 import parseGenreCard from "../parser/parseGenreCard";
 import parseAnimeDetail from "../parser/parseAnimeDetail";
 import parseAnimeEpisode from "../parser/parseAnimeEpisode";
+import parseAnimeBatch from "../parser/parseAnimeBatch";
 
 const OtakudesuController = {
   getMessage(req: Request, res: Response) {
     res.status(200).json({
-      message:
-        "OTAKUDESU IS READY 🍌💦, IJIN BANG OTAKUDESU🙏🙏🙏, SERING PANTAU BOSKUU DOMAIN SERING BERUBAH BISA EDIT DI src/helpers/animeUrl.ts",
+      message: "OTAKUDESU IS READY 🍌💦, MOHON IJIN BANG OTAKUDESU🙏🙏🙏",
       otakudesuUrl: animeUrl.otakudesu,
-      method: "methodnya get semua ya broo",
+      method: "GET semua ya broo",
       routes: {
         home: {
           route: "/otakudesu/home",
@@ -108,7 +108,7 @@ const OtakudesuController = {
             },
           },
         },
-        batchUrl: {
+        animeBatch: {
           route: "/otakudesu/batch/:slug",
           parameters: {
             routeParam: {
@@ -547,12 +547,29 @@ const OtakudesuController = {
     }
   },
 
-  // PARSERNYA CUYY
   async getBatch(req: Request, res: Response) {
+    const { slug } = req.params;
+    const route = `/batch/${slug}`;
+
+    const htmlData = await getHtmlData({ url: animeUrl.otakudesu + route });
+    const $ = load(htmlData);
+
+    const data = parseAnimeBatch($);
+
+    if (data.batchList.length === 0 && data.genres.length === 0) {
+      return res.status(404).json(
+        setPayload(res, {
+          message: "Not Found",
+          error: true,
+        })
+      );
+    }
+
     try {
       res.status(200).json(
         setPayload(res, {
-          message: "TES 123 SABAR BOSKUUH NGASOH DULU",
+          message: "Ok",
+          data: data,
         })
       );
     } catch (error) {

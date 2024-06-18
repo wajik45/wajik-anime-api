@@ -14,6 +14,7 @@ app.use(otakudesu_routes_1.default);
 app.get("/", (req, res) => {
     res.status(200).json({
         message: "WAJIK ANIME API IS READY 🔥🔥",
+        important: "SERING PANTAU BOSKUU DOMAIN SERING BERUBAH BISA EDIT DI src/helpers/animeUrl.ts",
         source: [
             {
                 name: "otakudesu",

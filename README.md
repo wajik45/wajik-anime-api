@@ -8,7 +8,7 @@ MOHON IZIN ABANG SUMBER, sumber bisa bertambah, bisa dm rekomendasi situs yang b
 
 - https://otakudesu.cloud
 
-domain sering berubah 2 jangan lupa pantau terus
+domain sering berubah 2 jangan lupa pantau terus untuk edit url di src/helpers/animeUrl.ts
 
 # Installasi
 
@@ -32,9 +32,9 @@ npm start
 
 # Routes
 
-| Endpoint  | Params | Description                                                 |
-| --------- | ------ | ----------------------------------------------------------- |
-| /{source} |        | Deskripsi rute ada di response jangan lupa pake JSON viewer |
+| Endpoint  | Description                                                 |
+| --------- | ----------------------------------------------------------- |
+| /{source} | Deskripsi rute ada di response jangan lupa pake JSON viewer |
 
 ### Contoh request
 

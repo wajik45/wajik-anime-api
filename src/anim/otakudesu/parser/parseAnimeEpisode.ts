@@ -3,7 +3,7 @@ import getSlug from "../../../helpers/getSlug";
 import getDetail from "../../../helpers/getDetail";
 
 export default function parseAnimeEpisode($: CheerioAPI) {
-  const downloadUrl: any = {};
+  const downloadUrl: any[] = [];
   const episodeList: any[] = [];
 
   let episodeSebelumnya = null;
@@ -39,7 +39,12 @@ export default function parseAnimeEpisode($: CheerioAPI) {
 
   $(".download ul li").each((index, element) => {
     const urls: any[] = [];
-    const kualitas = $(element).find("strong").text();
+    const kualitas = $(element)
+      .find("strong")
+      .text()
+      .trim()
+      .replace(/\ /g, "_");
+    const size = $(element).find("i").text();
 
     $(element)
       .find("a")
@@ -53,7 +58,11 @@ export default function parseAnimeEpisode($: CheerioAPI) {
         });
       });
 
-    downloadUrl["_" + kualitas] = urls;
+    downloadUrl.push({
+      kualitas,
+      urls,
+      size,
+    });
   });
 
   const { detail, genres } = getDetail($, ".infozingle p");
