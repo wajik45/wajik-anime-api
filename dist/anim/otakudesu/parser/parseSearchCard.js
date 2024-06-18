@@ -27,4 +27,3 @@ function parseSearchCard($) {
     return data;
 }
 exports.default = parseSearchCard;
-//# sourceMappingURL=parseSearchCard.js.map

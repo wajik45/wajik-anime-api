@@ -17,4 +17,3 @@ function default_1(string) {
         .replace(/[!@#$%^&*]| /g, "");
 }
 exports.default = default_1;
-//# sourceMappingURL=toCamelCase.js.map

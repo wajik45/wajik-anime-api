@@ -22,4 +22,3 @@ function parseGenreList($) {
     return data;
 }
 exports.default = parseGenreList;
-//# sourceMappingURL=parseGenreList.js.map

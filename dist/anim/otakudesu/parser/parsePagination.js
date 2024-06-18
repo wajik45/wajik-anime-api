@@ -17,4 +17,3 @@ function parsePagination($) {
     };
 }
 exports.default = parsePagination;
-//# sourceMappingURL=parsePagination.js.map

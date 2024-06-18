@@ -10,4 +10,3 @@ const setPayload = (res, options) => {
     };
 };
 exports.default = setPayload;
-//# sourceMappingURL=setPayload.js.map

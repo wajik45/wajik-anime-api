@@ -6,4 +6,3 @@ async function getHtmlData({ url }) {
     return htmlData;
 }
 exports.default = getHtmlData;
-//# sourceMappingURL=getHtmlData.js.map

@@ -19,4 +19,3 @@ OtakudesuRouter.get("/otakudesu/anime/:slug", otakudesu_controller_1.default.get
 OtakudesuRouter.get("/otakudesu/episode/:slug", otakudesu_controller_1.default.getAnimeByEpisode);
 OtakudesuRouter.get("/otakudesu/batch/:slug", otakudesu_controller_1.default.getBatch);
 exports.default = OtakudesuRouter;
-//# sourceMappingURL=otakudesu.routes.js.map

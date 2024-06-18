@@ -31,4 +31,3 @@ function parseAnimeList($) {
     return data;
 }
 exports.default = parseAnimeList;
-//# sourceMappingURL=parseAnimeList.js.map

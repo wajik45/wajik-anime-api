@@ -31,4 +31,3 @@ function parseJadwalRilis($) {
     return data;
 }
 exports.default = parseJadwalRilis;
-//# sourceMappingURL=parseJadwalRilis.js.map

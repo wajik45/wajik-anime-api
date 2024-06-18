@@ -41,4 +41,3 @@ function getDetail($, selectors) {
     };
 }
 exports.default = getDetail;
-//# sourceMappingURL=getDetail.js.map

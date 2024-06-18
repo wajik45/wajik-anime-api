@@ -32,4 +32,3 @@ app.use("*", (req, res) => {
 app.listen(PORT_1.default, () => {
     console.log(`SERVER BERJALAN DI http://localhost:${PORT_1.default}`);
 });
-//# sourceMappingURL=index.js.map

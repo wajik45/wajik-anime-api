@@ -4,4 +4,3 @@ function getSlug(url) {
     return url.split("/")[url.split("/").length - 2];
 }
 exports.default = getSlug;
-//# sourceMappingURL=getSlug.js.map

@@ -60,4 +60,3 @@ function parseAnimeDetail($) {
     };
 }
 exports.default = parseAnimeDetail;
-//# sourceMappingURL=parseAnimeDetail.js.map

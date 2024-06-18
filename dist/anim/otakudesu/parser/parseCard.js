@@ -27,4 +27,3 @@ function parseCard($, element) {
     };
 }
 exports.default = parseCard;
-//# sourceMappingURL=parseCard.js.map

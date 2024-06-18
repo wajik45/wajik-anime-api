@@ -60,4 +60,3 @@ function parseGenreCard($) {
     return data;
 }
 exports.default = parseGenreCard;
-//# sourceMappingURL=parseGenreCard.js.map

@@ -70,4 +70,3 @@ function parseAnimeBatch($) {
     };
 }
 exports.default = parseAnimeBatch;
-//# sourceMappingURL=parseAnimeBatch.js.map

@@ -87,4 +87,3 @@ function parseAnimeEpisode($) {
     };
 }
 exports.default = parseAnimeEpisode;
-//# sourceMappingURL=parseAnimeEpisode.js.map

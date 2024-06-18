@@ -4,4 +4,3 @@ const animeUrl = {
     otakudesu: "https://otakudesu.cloud",
 };
 exports.default = animeUrl;
-//# sourceMappingURL=animeUrl.js.map
