@@ -6,7 +6,7 @@ Streaming dan download Anime subtitle Indonesia
 
 MOHON IZIN ABANG SUMBER, sumber bisa bertambah, bisa dm rekomendasi situs yang bagus
 
-- https://otakudesu.cloud
+1. otakudesu: https://otakudesu.cloud
 
 domain sering berubah 2 jangan lupa pantau terus untuk edit url di src/helpers/animeUrl.ts
 
@@ -34,7 +34,7 @@ npm start
 
 | Endpoint  | Description                                                 |
 | --------- | ----------------------------------------------------------- |
-| /{source} | Deskripsi rute ada di response jangan lupa pake JSON viewer |
+| /{sumber} | Deskripsi rute ada di response jangan lupa pake JSON viewer |
 
 ### Contoh request
 
