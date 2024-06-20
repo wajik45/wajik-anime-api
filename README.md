@@ -24,7 +24,10 @@ cd wajik-anime-api
 # install dependensi
 npm install
 
-# jalankan server
+# build
+npm run build
+
+# menjalankan server
 npm start
 ```
 
