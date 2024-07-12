@@ -1,27 +1,47 @@
-import { Response } from "express";
+import type { Response } from "express";
+import http from "http";
 
-type Pagination = {
-  currentPage?: number;
-  totalPages?: number;
-  nextPage?: number | boolean;
-  prevPage?: number | boolean;
-};
+function setPayload(
+  res: Response,
+  props?: {
+    message?: string;
+    data?: any;
+    pagination?: {
+      currentPage?: number;
+      totalPages?: number;
+      totalItems?: number;
+      nextPage?: number | boolean;
+      prevPage?: number | boolean;
+    };
+    error?: boolean;
+  }
+) {
+  const isError = (statusCode: number) => {
+    const strStatusCode = statusCode.toString();
+    if (strStatusCode.startsWith("4") || strStatusCode.startsWith("5")) {
+      return true;
+    }
 
-type Options = {
-  message?: string;
-  data?: any;
-  pagination?: Pagination;
-  error?: boolean;
-};
-
-const setPayload = (res: Response, options: Options) => {
-  return {
-    statusCode: res.statusCode,
-    message: options.message || "",
-    data: options.data || null,
-    pagination: options.pagination || null,
-    error: options.error || false,
+    return false;
   };
-};
+
+  const statusCode = res.statusCode;
+  const statusMessage = http.STATUS_CODES[res.statusCode] || "";
+  const message = props?.message || "";
+  const data = props?.data || null;
+  const pagination = props?.pagination || null;
+  const error = isError(statusCode);
+
+  const payload = {
+    statusCode,
+    statusMessage,
+    message,
+    data,
+    pagination,
+    error,
+  };
+
+  return payload;
+}
 
 export default setPayload;

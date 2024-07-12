@@ -154,21 +154,14 @@ const OtakudesuController = {
                 data[key] = dataCard;
             });
             if (Object.values(data).length === 0) {
-                return res.status(404).json((0, setPayload_1.default)(res, {
-                    message: "Not Found",
-                    error: true,
-                }));
+                return res.status(404).json((0, setPayload_1.default)(res));
             }
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getCompleted(req, res) {
@@ -195,22 +188,15 @@ const OtakudesuController = {
             });
             const pagination = (0, parsePagination_1.default)($);
             if (data.length === 0) {
-                return res.status(404).json((0, setPayload_1.default)(res, {
-                    message: "Not Found",
-                    error: true,
-                }));
+                return res.status(404).json((0, setPayload_1.default)(res));
             }
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
                 pagination,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getOnGoing(req, res) {
@@ -237,22 +223,15 @@ const OtakudesuController = {
             });
             const pagination = (0, parsePagination_1.default)($);
             if (data.length === 0) {
-                return res.status(404).json((0, setPayload_1.default)(res, {
-                    message: "Not Found",
-                    error: true,
-                }));
+                return res.status(404).json((0, setPayload_1.default)(res));
             }
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
                 pagination,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getSearch(req, res) {
@@ -260,7 +239,6 @@ const OtakudesuController = {
         if (!q) {
             return res.status(400).json((0, setPayload_1.default)(res, {
                 message: 'Tidak ada "q" di query parameter',
-                error: true,
             }));
         }
         const route = `?s=${q}&post_type=anime`;
@@ -271,21 +249,14 @@ const OtakudesuController = {
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseSearchCard_1.default)($);
             if (data.length === 0) {
-                return res.status(404).json((0, setPayload_1.default)(res, {
-                    message: "Not Found",
-                    error: true,
-                }));
+                return res.status(404).json((0, setPayload_1.default)(res));
             }
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getJadwalRilis(req, res) {
@@ -295,15 +266,11 @@ const OtakudesuController = {
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseJadwalRilis_1.default)($);
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getGenreList(req, res) {
@@ -313,15 +280,11 @@ const OtakudesuController = {
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseGenreList_1.default)($);
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getAnimeList(req, res) {
@@ -331,15 +294,11 @@ const OtakudesuController = {
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseAnimeList_1.default)($);
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getAnimeListByGenre(req, res) {
@@ -352,22 +311,15 @@ const OtakudesuController = {
             const data = (0, parseGenreCard_1.default)($);
             const pagination = (0, parsePagination_1.default)($);
             if (data.length === 0) {
-                return res.status(404).json((0, setPayload_1.default)(res, {
-                    message: "Not Found",
-                    error: true,
-                }));
+                return res.status(404).json((0, setPayload_1.default)(res));
             }
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
                 pagination,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-                error: true,
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getAnimeDetail(req, res) {
@@ -378,20 +330,14 @@ const OtakudesuController = {
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseAnimeDetail_1.default)($);
             if (data.episodeList.length === 0) {
-                return res.status(404).json((0, setPayload_1.default)(res, {
-                    message: "Not Found",
-                    error: true,
-                }));
+                return res.status(404).json((0, setPayload_1.default)(res));
             }
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getAnimeByEpisode(req, res) {
@@ -406,20 +352,14 @@ const OtakudesuController = {
                 !data.episodeSelanjutnya &&
                 Object.values(data.downloadUrl).length === 0 &&
                 data.info.genres.length === 0) {
-                return res.status(404).json((0, setPayload_1.default)(res, {
-                    message: "Not Found",
-                    error: true,
-                }));
+                return res.status(404).json((0, setPayload_1.default)(res));
             }
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
     async getBatch(req, res) {
@@ -429,21 +369,15 @@ const OtakudesuController = {
         const $ = (0, cheerio_1.load)(htmlData);
         const data = (0, parseAnimeBatch_1.default)($);
         if (data.batchList.length === 0 && data.genres.length === 0) {
-            return res.status(404).json((0, setPayload_1.default)(res, {
-                message: "Not Found",
-                error: true,
-            }));
+            return res.status(404).json((0, setPayload_1.default)(res));
         }
         try {
             res.status(200).json((0, setPayload_1.default)(res, {
-                message: "Ok",
                 data: data,
             }));
         }
         catch (error) {
-            res.status(500).json((0, setPayload_1.default)(res, {
-                message: "Internal Server Error",
-            }));
+            res.status(500).json((0, setPayload_1.default)(res));
         }
     },
 };

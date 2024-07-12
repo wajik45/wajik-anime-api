@@ -172,27 +172,16 @@ const OtakudesuController = {
       });
 
       if (Object.values(data).length === 0) {
-        return res.status(404).json(
-          setPayload(res, {
-            message: "Not Found",
-            error: true,
-          })
-        );
+        return res.status(404).json(setPayload(res));
       }
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -227,28 +216,17 @@ const OtakudesuController = {
       const pagination = parsePagination($);
 
       if (data.length === 0) {
-        return res.status(404).json(
-          setPayload(res, {
-            message: "Not Found",
-            error: true,
-          })
-        );
+        return res.status(404).json(setPayload(res));
       }
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
           pagination,
         })
       );
     } catch (error: any) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -283,28 +261,17 @@ const OtakudesuController = {
       const pagination = parsePagination($);
 
       if (data.length === 0) {
-        return res.status(404).json(
-          setPayload(res, {
-            message: "Not Found",
-            error: true,
-          })
-        );
+        return res.status(404).json(setPayload(res));
       }
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
           pagination,
         })
       );
     } catch (error: any) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -317,7 +284,6 @@ const OtakudesuController = {
       return res.status(400).json(
         setPayload(res, {
           message: 'Tidak ada "q" di query parameter',
-          error: true,
         })
       );
     }
@@ -332,27 +298,16 @@ const OtakudesuController = {
       const data: Data = parseSearchCard($);
 
       if (data.length === 0) {
-        return res.status(404).json(
-          setPayload(res, {
-            message: "Not Found",
-            error: true,
-          })
-        );
+        return res.status(404).json(setPayload(res));
       }
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error: any) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -368,17 +323,11 @@ const OtakudesuController = {
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -394,17 +343,11 @@ const OtakudesuController = {
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -420,17 +363,11 @@ const OtakudesuController = {
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -448,28 +385,17 @@ const OtakudesuController = {
       const pagination = parsePagination($);
 
       if (data.length === 0) {
-        return res.status(404).json(
-          setPayload(res, {
-            message: "Not Found",
-            error: true,
-          })
-        );
+        return res.status(404).json(setPayload(res));
       }
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
           pagination,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-          error: true,
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -484,26 +410,16 @@ const OtakudesuController = {
       const data = parseAnimeDetail($);
 
       if (data.episodeList.length === 0) {
-        return res.status(404).json(
-          setPayload(res, {
-            message: "Not Found",
-            error: true,
-          })
-        );
+        return res.status(404).json(setPayload(res));
       }
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -524,26 +440,16 @@ const OtakudesuController = {
         Object.values(data.downloadUrl).length === 0 &&
         data.info.genres.length === 0
       ) {
-        return res.status(404).json(
-          setPayload(res, {
-            message: "Not Found",
-            error: true,
-          })
-        );
+        return res.status(404).json(setPayload(res));
       }
 
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 
@@ -557,27 +463,17 @@ const OtakudesuController = {
     const data = parseAnimeBatch($);
 
     if (data.batchList.length === 0 && data.genres.length === 0) {
-      return res.status(404).json(
-        setPayload(res, {
-          message: "Not Found",
-          error: true,
-        })
-      );
+      return res.status(404).json(setPayload(res));
     }
 
     try {
       res.status(200).json(
         setPayload(res, {
-          message: "Ok",
           data: data,
         })
       );
     } catch (error) {
-      res.status(500).json(
-        setPayload(res, {
-          message: "Internal Server Error",
-        })
-      );
+      res.status(500).json(setPayload(res));
     }
   },
 };

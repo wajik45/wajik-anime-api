@@ -24,12 +24,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("*", (req, res) => {
-  res.status(404).json(
-    setPayload(res, {
-      message: "Not Found",
-      error: true,
-    })
-  );
+  res.status(404).json(setPayload(res));
 });
 
 app.listen(PORT, () => {

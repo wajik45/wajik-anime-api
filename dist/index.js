@@ -24,10 +24,7 @@ app.get("/", (req, res) => {
     });
 });
 app.use("*", (req, res) => {
-    res.status(404).json((0, setPayload_1.default)(res, {
-        message: "Not Found",
-        error: true,
-    }));
+    res.status(404).json((0, setPayload_1.default)(res));
 });
 app.listen(PORT_1.default, () => {
     console.log(`SERVER BERJALAN DI http://localhost:${PORT_1.default}`);
