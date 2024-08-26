@@ -1,6 +1,6 @@
 import type { CheerioAPI } from "cheerio";
-import toCamelCase from "./toCamelCase";
-import getSlug from "./getSlug";
+import toCamelCase from "../../../helpers/toCamelCase";
+import getSlug from "../../../helpers/getSlug";
 
 export default function getDetail($: CheerioAPI, selectors: string) {
   const detail: any = {};

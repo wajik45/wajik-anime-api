@@ -1,3 +1,9 @@
 export default function getSlug(url: string) {
-  return url.split("/")[url.split("/").length - 2];
+  const urlArr = url.split("/");
+
+  if (url.endsWith("/") && url[url.length - 2] !== "/") {
+    return urlArr[urlArr.length - 2];
+  }
+
+  return urlArr[urlArr.length - 1];
 }

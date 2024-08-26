@@ -1,4 +1,4 @@
-import { CheerioAPI, text } from "cheerio";
+import { CheerioAPI } from "cheerio";
 import getSlug from "../../../helpers/getSlug";
 
 export default function parseAnimeBatch($: CheerioAPI) {

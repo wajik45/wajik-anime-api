@@ -1,7 +1,7 @@
 import type { CheerioAPI } from "cheerio";
 import type { ISearch } from "../interfaces/IOtakudesu";
 import getSlug from "../../../helpers/getSlug";
-import getDetail from "../../../helpers/getDetail";
+import getDetail from "../utils/getDetail";
 
 export default function parseSearchCard($: CheerioAPI) {
   const data: ISearch[] = [];

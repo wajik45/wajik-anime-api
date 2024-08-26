@@ -1,6 +1,6 @@
 import type { CheerioAPI } from "cheerio";
 import getSlug from "../../../helpers/getSlug";
-import getDetail from "../../../helpers/getDetail";
+import getDetail from "../utils/getDetail";
 
 export default function parseAnimeDetail($: CheerioAPI) {
   const sinopsis: any[] = [];
