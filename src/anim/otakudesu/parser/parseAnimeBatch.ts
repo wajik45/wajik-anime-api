@@ -39,7 +39,7 @@ export default function parseAnimeBatch($: CheerioAPI) {
   });
 
   $(".batchlink h4").each((index, element) => {
-    const qualityList: any[] = [];
+    const qualities: any[] = [];
 
     $(element)
       .next()
@@ -56,16 +56,16 @@ export default function parseAnimeBatch($: CheerioAPI) {
             });
           });
 
-        qualityList.push({
+        qualities.push({
           judul: $(element).find("strong").text(),
-          urls,
           size: $(element).find("i").text(),
+          urls,
         });
       });
 
     batchList.push({
       judul: $(element).text(),
-      kualitas: qualityList,
+      qualities,
     });
   });
 

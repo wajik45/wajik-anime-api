@@ -39,12 +39,12 @@ export interface ISearch {
 
 export interface IJadwalRilis {
   hari: string;
-  anime: IList[];
+  animeList: IList[];
 }
 
 export interface IAnimeList {
   berdasarkan: string;
-  anime: IList[];
+  animeList: IList[];
 }
 
 export interface IGenreList {
@@ -64,6 +64,6 @@ export interface IGenre {
   jumlahEpisode: string;
   rating: string;
   musim: string;
-  sinopsis: string[];
+  sinopsis: any;
   genres: IList[];
 }

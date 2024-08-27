@@ -3,9 +3,12 @@ import getSlug from "../../../helpers/getSlug";
 import getDetail from "../utils/getDetail";
 
 export default function parseAnimeDetail($: CheerioAPI) {
-  const sinopsis: any[] = [];
+  const sinopsis: any = {
+    paragraphs: [],
+    connections: [],
+  };
   const episodeList: any[] = [];
-  const batch: any[] = [];
+  const batch: any = {};
 
   const gaskenAdikAdik = (element: any, tipe: "episode" | "batch") => {
     $(element)
@@ -26,13 +29,11 @@ export default function parseAnimeDetail($: CheerioAPI) {
             tanggalRilis,
           });
         } else {
-          batch.push({
-            judul,
-            slug,
-            href,
-            otakudesuUrl,
-            tanggalRilis,
-          });
+          batch.judul = judul;
+          batch.slug = slug;
+          batch.href = href;
+          batch.otakudesuUrl = otakudesuUrl;
+          batch.tanggalRilis = tanggalRilis;
         }
       });
   };
@@ -40,10 +41,30 @@ export default function parseAnimeDetail($: CheerioAPI) {
   const poster = $("#venkonten .fotoanime img").attr("src");
   const { detail, genres } = getDetail($, ".infozingle p");
 
-  $(".sinopc").each((index, element) => {
-    const sinopsisText = $(element).find("p").text();
+  $(".sinopc p").each((index, element) => {
+    if ($(element).text()) {
+      if ($(element).find("a").length === 0) {
+        const sinopsisText = $(element).text();
 
-    sinopsis.push(sinopsisText);
+        sinopsis.paragraphs.push(sinopsisText);
+      } else {
+        $(element)
+          .find("a")
+          .each((index, element) => {
+            const judul = $(element).text();
+            const otakudesuUrl = $(element).attr("href") || "Unknown";
+            const slug = getSlug(otakudesuUrl);
+            const href = "/otakudesu/anime/" + slug;
+
+            sinopsis.connections.push({
+              judul,
+              otakudesuUrl,
+              slug,
+              href,
+            });
+          });
+      }
+    }
   });
 
   $(".episodelist").each((index, element) => {

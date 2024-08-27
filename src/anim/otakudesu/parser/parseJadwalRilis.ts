@@ -7,7 +7,7 @@ export default function parseJadwalRilis($: CheerioAPI) {
 
   $(".venutama .kglist321").each((index, element) => {
     const hari = $(element).find("h2").text();
-    const anime: IList[] = [];
+    const animeList: IList[] = [];
 
     $(element)
       .find("ul li")
@@ -17,7 +17,7 @@ export default function parseJadwalRilis($: CheerioAPI) {
         const slug = getSlug(otakudesuUrl);
         const href = "/otakudesu/anime/" + slug;
 
-        anime.push({
+        animeList.push({
           judul,
           slug,
           href,
@@ -27,7 +27,7 @@ export default function parseJadwalRilis($: CheerioAPI) {
 
     data.push({
       hari,
-      anime,
+      animeList,
     });
   });
 

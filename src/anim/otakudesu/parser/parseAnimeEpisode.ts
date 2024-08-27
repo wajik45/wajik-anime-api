@@ -3,7 +3,7 @@ import getSlug from "../../../helpers/getSlug";
 import getDetail from "../utils/getDetail";
 
 export default function parseAnimeEpisode($: CheerioAPI) {
-  const downloadUrl: any[] = [];
+  const downloadUrl: any = {};
   const episodeList: any[] = [];
 
   let episodeSebelumnya = null;
@@ -36,14 +36,17 @@ export default function parseAnimeEpisode($: CheerioAPI) {
   });
 
   const streamingUrl = $(".responsive-embed-stream iframe").attr("src");
+  const judulDownload = {
+    _1: $(".subheading h2").first().text(),
+    _2: $(".download h4").text(),
+  };
+
+  downloadUrl.judul = judulDownload;
+  downloadUrl.qualities = [];
 
   $(".download ul li").each((index, element) => {
     const urls: any[] = [];
-    const kualitas = $(element)
-      .find("strong")
-      .text()
-      .trim()
-      .replace(/\ /g, "_");
+    const judul = $(element).find("strong").text().trim().replace(/\ /g, "_");
     const size = $(element).find("i").text();
 
     $(element)
@@ -58,10 +61,10 @@ export default function parseAnimeEpisode($: CheerioAPI) {
         });
       });
 
-    downloadUrl.push({
-      kualitas,
-      urls,
+    downloadUrl.qualities.push({
+      judul,
       size,
+      urls,
     });
   });
 

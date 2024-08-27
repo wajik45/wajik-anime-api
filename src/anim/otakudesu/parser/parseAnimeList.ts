@@ -8,7 +8,7 @@ export default function parseAnimeList($: CheerioAPI) {
 
   $(".daftarkartun .bariskelom").each((index, element) => {
     const berdasarkan = $(element).find(".barispenz a").text();
-    const anime: IList[] = [];
+    const animeList: IList[] = [];
 
     $(element)
       .find(".penzbar .jdlbar")
@@ -18,7 +18,7 @@ export default function parseAnimeList($: CheerioAPI) {
         const slug = getSlug(otakudesuUrl);
         const href = "/otakudesu/anime/" + slug;
 
-        anime.push({
+        animeList.push({
           judul,
           slug,
           href,
@@ -28,7 +28,7 @@ export default function parseAnimeList($: CheerioAPI) {
 
     data.push({
       berdasarkan,
-      anime,
+      animeList,
     });
   });
 

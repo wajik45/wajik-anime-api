@@ -17,7 +17,10 @@ export default function parseGenreCard($: CheerioAPI) {
     const musim = $(element).find(".col-anime-date").text();
     const poster =
       $(element).find(".col-anime-cover img").attr("src") || "Unknown";
-    const sinopsis: string[] = [];
+    const sinopsis: any = {
+      paragraphs: [],
+      connections: [],
+    };
     const genres: IList[] = [];
     const otakudesuUrl =
       $(element).find(".col-anime-title a").attr("href") || "Unknown";
@@ -28,7 +31,27 @@ export default function parseGenreCard($: CheerioAPI) {
       .find(".col-synopsis p")
       .each((index, element) => {
         if ($(element).text()) {
-          sinopsis.push($(element).text());
+          if ($(element).find("a").length === 0) {
+            const sinopsisText = $(element).text();
+
+            sinopsis.paragraphs.push(sinopsisText);
+          } else {
+            $(element)
+              .find("a")
+              .each((index, element) => {
+                const judul = $(element).text();
+                const otakudesuUrl = $(element).attr("href") || "Unknown";
+                const slug = getSlug(otakudesuUrl);
+                const href = "/otakudesu/anime/" + slug;
+
+                sinopsis.connections.push({
+                  judul,
+                  otakudesuUrl,
+                  slug,
+                  href,
+                });
+              });
+          }
         }
       });
 
