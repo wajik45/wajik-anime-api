@@ -1,20 +1,25 @@
-import type { CheerioAPI } from "cheerio";
+import type { CheerioAPI, Cheerio, Element } from "cheerio";
 import getSlug from "../../../helpers/getSlug";
+import getOtakudesuUrl from "../utils/getOtakudesuUrl";
 
-export default function parseCard($: CheerioAPI, element: any) {
-  const episode = $(element)
+export default function parseCard(
+  $: CheerioAPI,
+  cheerioElement: Cheerio<Element>
+) {
+  const episode = cheerioElement
     .find(".detpost .epz")
     .text()
     .replace("Episode", "")
     .trim();
-  const ratingAtauHari = $(element).find(".detpost .epztipe").text().trim();
-  const judul = $(element).find(".detpost .thumbz .jdlflm").text();
-  const otakudesuUrl =
-    $(element).find(".detpost .thumb a").attr("href") || "Unknown";
+  const ratingAtauHari = cheerioElement.find(".detpost .epztipe").text().trim();
+  const judul = cheerioElement.find(".detpost .thumbz .jdlflm").text();
+  const otakudesuUrl = getOtakudesuUrl(
+    cheerioElement.find(".detpost .thumb a").attr("href")
+  );
   const poster =
-    $(element).find(".detpost .thumb .thumbz img").attr("src") || "Unknown";
+    cheerioElement.find(".detpost .thumb .thumbz img").attr("src") || "";
   const slug = getSlug(otakudesuUrl);
-  const tanggal = $(element).find(".detpost .newnime").text();
+  const tanggal = cheerioElement.find(".detpost .newnime").text();
 
   return {
     judul,

@@ -23,6 +23,9 @@ OtakudesuRouter.get(
   "/otakudesu/episode/:slug",
   OtakudesuController.getAnimeByEpisode
 );
-OtakudesuRouter.get("/otakudesu/batch/:slug", OtakudesuController.getBatch);
+OtakudesuRouter.get(
+  "/otakudesu/batch/:slug",
+  OtakudesuController.getAnimeBatch
+);
 
 export default OtakudesuRouter;

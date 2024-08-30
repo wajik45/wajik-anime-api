@@ -47,14 +47,7 @@ export interface IAnimeList {
   animeList: IList[];
 }
 
-export interface IGenreList {
-  judul: string;
-  slug: string;
-  href: string;
-  otakudesuUrl: string;
-}
-
-export interface IGenre {
+export interface IAnimeListByGenre {
   judul: string;
   slug: string;
   href: string;
@@ -66,4 +59,11 @@ export interface IGenre {
   musim: string;
   sinopsis: any;
   genres: IList[];
+}
+
+export interface IGenreList {
+  judul: string;
+  slug: string;
+  href: string;
+  otakudesuUrl: string;
 }
