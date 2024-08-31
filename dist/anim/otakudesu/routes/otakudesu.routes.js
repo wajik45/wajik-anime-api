@@ -17,5 +17,6 @@ OtakudesuRouter.get("/otakudesu/genres/:slug", otakudesu_controller_1.default.ge
 OtakudesuRouter.get("/otakudesu/anime", otakudesu_controller_1.default.getAnimeList);
 OtakudesuRouter.get("/otakudesu/anime/:slug", otakudesu_controller_1.default.getAnimeDetail);
 OtakudesuRouter.get("/otakudesu/episode/:slug", otakudesu_controller_1.default.getAnimeByEpisode);
-OtakudesuRouter.get("/otakudesu/batch/:slug", otakudesu_controller_1.default.getBatch);
+OtakudesuRouter.get("/otakudesu/episode/embed/:slug", otakudesu_controller_1.default.getAnimeEmbedByEpisode);
+OtakudesuRouter.get("/otakudesu/batch/:slug", otakudesu_controller_1.default.getAnimeBatch);
 exports.default = OtakudesuRouter;

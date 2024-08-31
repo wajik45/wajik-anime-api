@@ -60,7 +60,7 @@ export default async function parseAnimeByEpisode($: CheerioAPI) {
 
     urlElements.forEach(async (urlElement) => {
       const judul = $(urlElement).text();
-      const url = $(urlElement).attr("href");
+      const url = $(urlElement).attr("href") || getOtakudesuUrl();
 
       urls.push({
         judul,
@@ -99,12 +99,14 @@ export default async function parseAnimeByEpisode($: CheerioAPI) {
   });
 
   const judul = $("#venkonten .posttl").text();
-  const streamingUrl = $(".responsive-embed-stream iframe").attr("src");
+  const jamRilis = $("#venkonten .kategoz .fa.fa-clock-o").next().text();
+  const defaultStreamingUrl = $(".responsive-embed-stream iframe").attr("src");
   const { detail, genres } = parseDetail($, $(".infozingle p"));
 
   return {
     judul,
-    streamingUrl,
+    jamRilis,
+    defaultStreamingUrl,
     episodeSebelumnya,
     episodeSelanjutnya,
     downloadUrl,

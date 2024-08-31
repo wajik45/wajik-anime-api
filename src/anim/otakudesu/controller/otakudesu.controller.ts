@@ -15,6 +15,7 @@ import parseSearch from "../parser/main/parseSearch";
 import parseAnimeListByGenre from "../parser/main/parseAnimeListByGenre.ts";
 import parseAnimeByEpisode from "../parser/main/parseAnimeByEpisode";
 import getOtakudesuUrl from "../utils/getOtakudesuUrl";
+import parseAnimeEmbedByEpisode from "../parser/main/parseAnimeEmbedByEpisode";
 
 const otakudesuUrl = getOtakudesuUrl();
 
@@ -23,7 +24,6 @@ const OtakudesuController = {
     res.status(200).json({
       message: "OTAKUDESU IS READY 🍌💦, MOHON IJIN BANG OTAKUDESU🙏🙏🙏",
       otakudesuUrl: otakudesuUrl,
-      method: "GET semua ya broo",
       routes: {
         home: {
           route: "/otakudesu/home",
@@ -42,7 +42,7 @@ const OtakudesuController = {
           parameters: {
             queryParam: {
               parameter: "?page",
-              value: "number | string",
+              value: "number",
               defaultValue: 1,
             },
           },
@@ -52,7 +52,7 @@ const OtakudesuController = {
           parameters: {
             queryParam: {
               parameter: "?page",
-              value: "number | string",
+              value: "number",
               defaultValue: 1,
             },
           },
@@ -77,7 +77,7 @@ const OtakudesuController = {
             },
             queryParam: {
               parameter: "?page",
-              value: "number | string",
+              value: "number",
               defaultValue: 1,
             },
           },
@@ -93,8 +93,18 @@ const OtakudesuController = {
             },
           },
         },
-        animeEpisode: {
+        animeByEpisode: {
           route: "/otakudesu/episode/:slug",
+          parameters: {
+            routeParam: {
+              parameter: ":slug",
+              value: "string & required",
+              message: "dapatkan slug dari route /anime/:slug",
+            },
+          },
+        },
+        animeEmbedByEpisode: {
+          route: "/otakudesu/episode/embed/:slug",
           parameters: {
             routeParam: {
               parameter: ":slug",
@@ -147,6 +157,10 @@ const OtakudesuController = {
       const data = parseCompleted($);
       const pagination = parsePagination($);
 
+      if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+        return res.status(400).json(setPayload(res));
+      }
+
       if (data.length === 0) {
         return res.status(404).json(setPayload(res));
       }
@@ -172,6 +186,10 @@ const OtakudesuController = {
       const data = parseOnGoing($);
       const pagination = parsePagination($);
 
+      if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+        return res.status(400).json(setPayload(res));
+      }
+
       if (data.length === 0) {
         return res.status(404).json(setPayload(res));
       }
@@ -190,7 +208,7 @@ const OtakudesuController = {
   async getSearch(req: Request, res: Response) {
     const q = req.query.q;
 
-    if (!q) {
+    if (q === undefined) {
       return res.status(400).json(
         setPayload(res, {
           message: 'Tidak ada "q" di query parameter',
@@ -225,7 +243,7 @@ const OtakudesuController = {
     try {
       const htmlData = await getHtmlData(otakudesuUrl + route, {
         useCache: true,
-        TTL: 60 * 60,
+        TTL: 60 * 10,
       });
       const $ = load(htmlData);
       const data = parseJadwalRilis($);
@@ -289,6 +307,10 @@ const OtakudesuController = {
       const data = await parseAnimeListByGenre($);
       const pagination = parsePagination($);
 
+      if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+        return res.status(400).json(setPayload(res));
+      }
+
       if (data.length === 0) {
         return res.status(404).json(setPayload(res));
       }
@@ -309,7 +331,9 @@ const OtakudesuController = {
     const route = `/anime/${slug}`;
 
     try {
-      const htmlData = await getHtmlData(otakudesuUrl + route);
+      const htmlData = await getHtmlData(otakudesuUrl + route, {
+        useCache: true,
+      });
       const $ = load(htmlData);
       const data = await parseAnimeDetail($);
 
@@ -332,7 +356,9 @@ const OtakudesuController = {
     const route = `/episode/${slug}`;
 
     try {
-      const htmlData = await getHtmlData(otakudesuUrl + route);
+      const htmlData = await getHtmlData(otakudesuUrl + route, {
+        useCache: true,
+      });
       const $ = load(htmlData);
       const data = await parseAnimeByEpisode($);
 
@@ -340,9 +366,37 @@ const OtakudesuController = {
         !data.judul &&
         !data.episodeSebelumnya &&
         !data.episodeSelanjutnya &&
-        Object.values(data.downloadUrl).length === 0 &&
-        data.info.genres.length === 0
+        data.info.genres.length === 0 &&
+        data.info.episodeList.length === 0
       ) {
+        return res.status(404).json(setPayload(res));
+      }
+
+      res.status(200).json(
+        setPayload(res, {
+          data: {
+            streamingHref: "/episode/embed/" + slug,
+            ...data,
+          },
+        })
+      );
+    } catch (error: any) {
+      res.status(500).json(setPayload(res));
+    }
+  },
+
+  async getAnimeEmbedByEpisode(req: Request, res: Response) {
+    const { slug } = req.params;
+    const route = `/episode/${slug}`;
+
+    try {
+      const htmlData = await getHtmlData(otakudesuUrl + route, {
+        useCache: true,
+      });
+      const $ = load(htmlData);
+      const data = await parseAnimeEmbedByEpisode($);
+
+      if (data.length === 0) {
         return res.status(404).json(setPayload(res));
       }
 
@@ -351,7 +405,7 @@ const OtakudesuController = {
           data: data,
         })
       );
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json(setPayload(res));
     }
   },
@@ -361,7 +415,9 @@ const OtakudesuController = {
     const route = `/batch/${slug}`;
 
     try {
-      const htmlData = await getHtmlData(otakudesuUrl + route);
+      const htmlData = await getHtmlData(otakudesuUrl + route, {
+        useCache: true,
+      });
       const $ = load(htmlData);
       const data = await parseAnimeBatch($);
 

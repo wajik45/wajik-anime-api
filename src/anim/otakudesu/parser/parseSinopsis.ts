@@ -1,7 +1,6 @@
 import type { CheerioAPI, Cheerio, Element } from "cheerio";
 import getFinalUrl from "../../../helpers/getFinalUrl";
 import getSlug from "../../../helpers/getSlug";
-import animeUrl from "../../../helpers/animeUrl";
 import getOtakudesuUrl from "../utils/getOtakudesuUrl";
 
 export default async function parseSinopsis(
@@ -46,7 +45,7 @@ export default async function parseSinopsis(
                 useCache: true,
               });
 
-              if (!originalUrl1.includes(animeUrl.otakudesu)) {
+              if (!originalUrl1.includes(getOtakudesuUrl())) {
                 const query = getSlug(originalUrl1);
 
                 originalUrl1 = getOtakudesuUrl() + query;

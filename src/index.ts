@@ -11,7 +11,8 @@ app.use(OtakudesuRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
-    message: "WAJIK ANIME API IS READY 🔥🔥",
+    message:
+      "WAJIK ANIME API IS READY 🔥🔥, SEMUA RUTE ADA DI RESPONSE BERDASARKAN SOURCE",
     important:
       "SERING PANTAU BOSKUU DOMAIN SERING BERUBAH BISA EDIT DI src/helpers/animeUrl.ts",
     source: [

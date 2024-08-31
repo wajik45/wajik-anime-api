@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function getSlug(url) {
-    return url.split("/")[url.split("/").length - 2];
-}
 exports.default = getSlug;
+function getSlug(url) {
+    const urlArr = url.split("/").filter((url) => url !== "");
+    return urlArr[urlArr.length - 1];
+}
