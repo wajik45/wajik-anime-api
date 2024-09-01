@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = parseAnimeBatch;
 const getSlug_1 = __importDefault(require("../../../../helpers/getSlug"));
 const getOtakudesuUrl_1 = __importDefault(require("../../utils/getOtakudesuUrl"));
-async function parseAnimeBatch($) {
+function parseAnimeBatch($) {
     const detailSelector = ".animeinfo .infos";
     const detail = {};
     const genres = [];

@@ -4,22 +4,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = getFinalUrl;
-const node_cache_1 = __importDefault(require("node-cache"));
-const locationCache = new node_cache_1.default();
-const defaultTTL = 60 * 60 * 24;
-async function getFinalUrl(url, options) {
-    const cachedData = locationCache.get(url);
-    if (cachedData && options?.useCache === true) {
+const cache_1 = require("./cache");
+const axios_1 = __importDefault(require("axios"));
+async function getFinalUrl(url, cacheOptions, axiosOptions) {
+    const cachedData = (0, cache_1.getFromCache)(url);
+    if (cachedData && cacheOptions?.useCache === true) {
+        console.log("hit");
         return typeof cachedData === "string" ? cachedData : url;
     }
-    const response = await fetch(url, {
-        method: "HEAD",
-        redirect: "manual",
+    console.log("miss");
+    const response = await axios_1.default.head(url, {
+        ...axiosOptions,
+        maxRedirects: 0,
+        validateStatus: function (status) {
+            return status >= 200 && status < 400;
+        },
     });
-    const location = response.headers.get("location");
+    const location = response.headers["location"];
     if (location) {
-        if (options?.useCache === true) {
-            locationCache.set(url, location, options?.TTL || defaultTTL);
+        if (cacheOptions?.useCache === true) {
+            (0, cache_1.putInCache)(url, location, cacheOptions?.TTL || cache_1.defaultTTL);
         }
         return location;
     }

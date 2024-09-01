@@ -151,15 +151,19 @@ const OtakudesuController = {
     const page = Number(req.query.page) || 1;
     const route = `/complete-anime/page/${page}`;
 
+    if (page < 1) {
+      return res.status(400).json(setPayload(res));
+    }
+
+    if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+      return res.status(400).json(setPayload(res));
+    }
+
     try {
       const htmlData = await getHtmlData(otakudesuUrl + route);
       const $ = load(htmlData);
       const data = parseCompleted($);
       const pagination = parsePagination($);
-
-      if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
-        return res.status(400).json(setPayload(res));
-      }
 
       if (data.length === 0) {
         return res.status(404).json(setPayload(res));
@@ -180,15 +184,19 @@ const OtakudesuController = {
     const page = Number(req.query.page) || 1;
     const route = `/ongoing-anime/page/${page}`;
 
+    if (page < 1) {
+      return res.status(400).json(setPayload(res));
+    }
+
+    if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+      return res.status(400).json(setPayload(res));
+    }
+
     try {
       const htmlData = await getHtmlData(otakudesuUrl + route);
       const $ = load(htmlData);
       const data = parseOnGoing($);
       const pagination = parsePagination($);
-
-      if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
-        return res.status(400).json(setPayload(res));
-      }
 
       if (data.length === 0) {
         return res.status(404).json(setPayload(res));
@@ -243,7 +251,7 @@ const OtakudesuController = {
     try {
       const htmlData = await getHtmlData(otakudesuUrl + route, {
         useCache: true,
-        TTL: 60 * 10,
+        TTL: 1000 * 60 * 10,
       });
       const $ = load(htmlData);
       const data = parseJadwalRilis($);
@@ -282,7 +290,10 @@ const OtakudesuController = {
     const route = "/anime-list";
 
     try {
-      const htmlData = await getHtmlData(otakudesuUrl + route);
+      const htmlData = await getHtmlData(otakudesuUrl + route, {
+        useCache: true,
+        TTL: 1000 * 60 * 10,
+      });
       const $ = load(htmlData);
       const data = parseAnimeList($);
 
@@ -301,15 +312,22 @@ const OtakudesuController = {
     const page = Number(req.query.page) || 1;
     const route = `/genres/${slug}/page/${page}`;
 
+    if (page < 1) {
+      return res.status(400).json(setPayload(res));
+    }
+
+    if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+      return res.status(400).json(setPayload(res));
+    }
+
     try {
-      const htmlData = await getHtmlData(otakudesuUrl + route);
+      const htmlData = await getHtmlData(otakudesuUrl + route, {
+        useCache: true,
+        TTL: 1000 * 60 * 10,
+      });
       const $ = load(htmlData);
       const data = await parseAnimeListByGenre($);
       const pagination = parsePagination($);
-
-      if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
-        return res.status(400).json(setPayload(res));
-      }
 
       if (data.length === 0) {
         return res.status(404).json(setPayload(res));
@@ -360,7 +378,7 @@ const OtakudesuController = {
         useCache: true,
       });
       const $ = load(htmlData);
-      const data = await parseAnimeByEpisode($);
+      const data = parseAnimeByEpisode($);
 
       if (
         !data.judul &&
@@ -375,7 +393,7 @@ const OtakudesuController = {
       res.status(200).json(
         setPayload(res, {
           data: {
-            streamingHref: "/episode/embed/" + slug,
+            streamingHref: "/otakudesu/episode/embed/" + slug,
             ...data,
           },
         })
@@ -419,7 +437,7 @@ const OtakudesuController = {
         useCache: true,
       });
       const $ = load(htmlData);
-      const data = await parseAnimeBatch($);
+      const data = parseAnimeBatch($);
 
       if (data.batchList.length === 0 && data.genres.length === 0) {
         return res.status(404).json(setPayload(res));

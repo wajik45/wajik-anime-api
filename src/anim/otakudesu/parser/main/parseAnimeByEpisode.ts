@@ -3,7 +3,7 @@ import getSlug from "../../../../helpers/getSlug";
 import parseDetail from "../parseDetail";
 import getOtakudesuUrl from "../../utils/getOtakudesuUrl";
 
-export default async function parseAnimeByEpisode($: CheerioAPI) {
+export default function parseAnimeByEpisode($: CheerioAPI) {
   const downloadUrl: any = {};
   const episodeList: any[] = [];
 
@@ -58,7 +58,7 @@ export default async function parseAnimeByEpisode($: CheerioAPI) {
     const size = $(downloadElement).find("i").text();
     const urlElements = $(downloadElement).find("a").toArray();
 
-    urlElements.forEach(async (urlElement) => {
+    urlElements.forEach((urlElement) => {
       const judul = $(urlElement).text();
       const url = $(urlElement).attr("href") || getOtakudesuUrl();
 

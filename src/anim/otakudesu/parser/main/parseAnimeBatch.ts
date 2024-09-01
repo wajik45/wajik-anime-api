@@ -2,7 +2,7 @@ import { CheerioAPI } from "cheerio";
 import getSlug from "../../../../helpers/getSlug";
 import getOtakudesuUrl from "../../utils/getOtakudesuUrl";
 
-export default async function parseAnimeBatch($: CheerioAPI) {
+export default function parseAnimeBatch($: CheerioAPI) {
   const detailSelector = ".animeinfo .infos";
   const detail: any = {};
   const genres: any[] = [];

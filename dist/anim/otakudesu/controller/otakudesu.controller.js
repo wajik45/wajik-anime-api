@@ -146,14 +146,17 @@ const OtakudesuController = {
     async getCompleted(req, res) {
         const page = Number(req.query.page) || 1;
         const route = `/complete-anime/page/${page}`;
+        if (page < 1) {
+            return res.status(400).json((0, setPayload_1.default)(res));
+        }
+        if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+            return res.status(400).json((0, setPayload_1.default)(res));
+        }
         try {
             const htmlData = await (0, getHtmlData_1.default)(otakudesuUrl + route);
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseCompleted_1.default)($);
             const pagination = (0, parsePagination_1.default)($);
-            if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
-                return res.status(400).json((0, setPayload_1.default)(res));
-            }
             if (data.length === 0) {
                 return res.status(404).json((0, setPayload_1.default)(res));
             }
@@ -169,14 +172,17 @@ const OtakudesuController = {
     async getOnGoing(req, res) {
         const page = Number(req.query.page) || 1;
         const route = `/ongoing-anime/page/${page}`;
+        if (page < 1) {
+            return res.status(400).json((0, setPayload_1.default)(res));
+        }
+        if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+            return res.status(400).json((0, setPayload_1.default)(res));
+        }
         try {
             const htmlData = await (0, getHtmlData_1.default)(otakudesuUrl + route);
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseOnGoing_1.default)($);
             const pagination = (0, parsePagination_1.default)($);
-            if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
-                return res.status(400).json((0, setPayload_1.default)(res));
-            }
             if (data.length === 0) {
                 return res.status(404).json((0, setPayload_1.default)(res));
             }
@@ -217,7 +223,7 @@ const OtakudesuController = {
         try {
             const htmlData = await (0, getHtmlData_1.default)(otakudesuUrl + route, {
                 useCache: true,
-                TTL: 60 * 10,
+                TTL: 1000 * 60 * 10,
             });
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseJadwalRilis_1.default)($);
@@ -248,7 +254,10 @@ const OtakudesuController = {
     async getAnimeList(req, res) {
         const route = "/anime-list";
         try {
-            const htmlData = await (0, getHtmlData_1.default)(otakudesuUrl + route);
+            const htmlData = await (0, getHtmlData_1.default)(otakudesuUrl + route, {
+                useCache: true,
+                TTL: 1000 * 60 * 10,
+            });
             const $ = (0, cheerio_1.load)(htmlData);
             const data = (0, parseAnimeList_1.default)($);
             res.status(200).json((0, setPayload_1.default)(res, {
@@ -263,14 +272,20 @@ const OtakudesuController = {
         const { slug } = req.params;
         const page = Number(req.query.page) || 1;
         const route = `/genres/${slug}/page/${page}`;
+        if (page < 1) {
+            return res.status(400).json((0, setPayload_1.default)(res));
+        }
+        if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
+            return res.status(400).json((0, setPayload_1.default)(res));
+        }
         try {
-            const htmlData = await (0, getHtmlData_1.default)(otakudesuUrl + route);
+            const htmlData = await (0, getHtmlData_1.default)(otakudesuUrl + route, {
+                useCache: true,
+                TTL: 1000 * 60 * 10,
+            });
             const $ = (0, cheerio_1.load)(htmlData);
             const data = await (0, parseAnimeListByGenre_ts_1.default)($);
             const pagination = (0, parsePagination_1.default)($);
-            if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
-                return res.status(400).json((0, setPayload_1.default)(res));
-            }
             if (data.length === 0) {
                 return res.status(404).json((0, setPayload_1.default)(res));
             }
@@ -311,7 +326,7 @@ const OtakudesuController = {
                 useCache: true,
             });
             const $ = (0, cheerio_1.load)(htmlData);
-            const data = await (0, parseAnimeByEpisode_1.default)($);
+            const data = (0, parseAnimeByEpisode_1.default)($);
             if (!data.judul &&
                 !data.episodeSebelumnya &&
                 !data.episodeSelanjutnya &&
@@ -321,7 +336,7 @@ const OtakudesuController = {
             }
             res.status(200).json((0, setPayload_1.default)(res, {
                 data: {
-                    streamingHref: "/episode/embed/" + slug,
+                    streamingHref: "/otakudesu/episode/embed/" + slug,
                     ...data,
                 },
             }));
@@ -358,7 +373,7 @@ const OtakudesuController = {
                 useCache: true,
             });
             const $ = (0, cheerio_1.load)(htmlData);
-            const data = await (0, parseAnimeBatch_1.default)($);
+            const data = (0, parseAnimeBatch_1.default)($);
             if (data.batchList.length === 0 && data.genres.length === 0) {
                 return res.status(404).json((0, setPayload_1.default)(res));
             }

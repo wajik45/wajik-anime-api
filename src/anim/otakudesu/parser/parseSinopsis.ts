@@ -2,6 +2,7 @@ import type { CheerioAPI, Cheerio, Element } from "cheerio";
 import getFinalUrl from "../../../helpers/getFinalUrl";
 import getSlug from "../../../helpers/getSlug";
 import getOtakudesuUrl from "../utils/getOtakudesuUrl";
+import getFinalUrls from "../../../helpers/getFinalUrls";
 
 export default async function parseSinopsis(
   $: CheerioAPI,
@@ -23,6 +24,7 @@ export default async function parseSinopsis(
         sinopsis.paragraphs.push(sinopsisText);
       } else {
         const connectionElements = $(animeElement).find("a").toArray();
+        const otakudesuUrls: string[] = [];
 
         for (let j = 0; j < connectionElements.length; j++) {
           const connectionElement = connectionElements[j];
@@ -30,47 +32,62 @@ export default async function parseSinopsis(
           const otakudesuUrl =
             $(connectionElement).attr("href") || getOtakudesuUrl();
 
-          try {
-            let originalUrl: string;
+          sinopsis.connections.push({
+            judul,
+          });
 
-            if (otakudesuUrl.includes("otakudesu")) {
-              const query = getSlug(otakudesuUrl);
+          if (
+            otakudesuUrl.includes("otakudesu") &&
+            !otakudesuUrl.includes(getOtakudesuUrl())
+          ) {
+            const query = getSlug(otakudesuUrl);
 
-              originalUrl = await getFinalUrl(
-                getOtakudesuUrl() + "?p=" + query,
-                { useCache: true }
-              );
-            } else {
-              let originalUrl1 = await getFinalUrl(otakudesuUrl, {
-                useCache: true,
-              });
-
-              if (!originalUrl1.includes(getOtakudesuUrl())) {
-                const query = getSlug(originalUrl1);
-
-                originalUrl1 = getOtakudesuUrl() + query;
-              }
-
-              const originalUrl2 = await getFinalUrl(originalUrl1, {
-                useCache: true,
-              });
-
-              originalUrl = originalUrl2;
-            }
-
-            const slug = getSlug(originalUrl);
-            const href = "/otakudesu/anime/" + slug;
-
-            sinopsis.connections.push({
-              judul,
-              slug,
-              href,
-              otakudesuUrl: originalUrl,
+            otakudesuUrls.push(getOtakudesuUrl() + "?p=" + query);
+          } else {
+            const originalUrl = await getFinalUrl(otakudesuUrl, {
+              useCache: true,
             });
-          } catch (error: any) {
-            console.log(error.message);
+
+            if (!originalUrl.includes(getOtakudesuUrl())) {
+              const query = getSlug(originalUrl);
+
+              otakudesuUrls.push(getOtakudesuUrl() + query);
+            } else {
+              otakudesuUrls.push(originalUrl);
+            }
           }
         }
+
+        const originalUrls = await getFinalUrls(
+          otakudesuUrls,
+          {
+            useCache: true,
+          },
+          {
+            timeout: 10000,
+          },
+          {
+            delay: 100,
+            retries: 2,
+          }
+        );
+        const finalConnections: any[] = [];
+
+        for (let k = 0; k < originalUrls.length; k++) {
+          const judul = sinopsis.connections[k].judul;
+          const originalUrl = originalUrls[k];
+          const slug = getSlug(originalUrl);
+          const href = "/otakudesu/anime/" + slug;
+
+          finalConnections.push({
+            judul,
+            slug,
+            href,
+            originalUrl,
+          });
+        }
+
+        sinopsis.connections = finalConnections;
       }
     }
   }

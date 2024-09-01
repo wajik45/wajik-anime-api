@@ -1,26 +1,33 @@
-import NodeCache from "node-cache";
-
-const cache = new NodeCache();
-const defaultTTL = 60 * 60 * 24;
+import type { AxiosRequestConfig } from "axios";
+import { defaultTTL, getFromCache, putInCache } from "./cache";
+import axios from "axios";
 
 export default async function getHtmlData(
   url: string,
-  options?: {
+  cacheOptions?: {
     useCache?: boolean;
     TTL?: number;
-  }
+  },
+  axiosOptions?: AxiosRequestConfig<any>
 ) {
-  const cachedData = cache.get(url);
+  const cachedData = getFromCache(url);
 
-  if (cachedData && options?.useCache === true) {
+  if (cachedData && cacheOptions?.useCache === true) {
+    console.log("hit");
+
     return typeof cachedData === "string" ? cachedData : url;
   }
 
-  const response = await fetch(url);
-  const htmlData = await response.text();
+  console.log("miss");
 
-  if (options?.useCache === true) {
-    cache.set(url, htmlData, options?.TTL || defaultTTL);
+  const response = await axios.get(url, {
+    ...axiosOptions,
+    responseType: "text",
+  });
+  const htmlData = await response.data;
+
+  if (cacheOptions?.useCache === true) {
+    putInCache(url, htmlData, cacheOptions?.TTL || defaultTTL);
   }
 
   return htmlData;

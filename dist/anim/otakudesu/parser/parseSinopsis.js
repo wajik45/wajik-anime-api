@@ -7,6 +7,7 @@ exports.default = parseSinopsis;
 const getFinalUrl_1 = __importDefault(require("../../../helpers/getFinalUrl"));
 const getSlug_1 = __importDefault(require("../../../helpers/getSlug"));
 const getOtakudesuUrl_1 = __importDefault(require("../utils/getOtakudesuUrl"));
+const getFinalUrls_1 = __importDefault(require("../../../helpers/getFinalUrls"));
 async function parseSinopsis($, cheerioElement) {
     const sinopsis = {
         paragraphs: [],
@@ -22,42 +23,54 @@ async function parseSinopsis($, cheerioElement) {
             }
             else {
                 const connectionElements = $(animeElement).find("a").toArray();
+                const otakudesuUrls = [];
                 for (let j = 0; j < connectionElements.length; j++) {
                     const connectionElement = connectionElements[j];
                     const judul = $(connectionElement).text();
                     const otakudesuUrl = $(connectionElement).attr("href") || (0, getOtakudesuUrl_1.default)();
-                    try {
-                        let originalUrl;
-                        if (otakudesuUrl.includes("otakudesu")) {
-                            const query = (0, getSlug_1.default)(otakudesuUrl);
-                            originalUrl = await (0, getFinalUrl_1.default)((0, getOtakudesuUrl_1.default)() + "?p=" + query, { useCache: true });
+                    sinopsis.connections.push({
+                        judul,
+                    });
+                    if (otakudesuUrl.includes("otakudesu") &&
+                        !otakudesuUrl.includes((0, getOtakudesuUrl_1.default)())) {
+                        const query = (0, getSlug_1.default)(otakudesuUrl);
+                        otakudesuUrls.push((0, getOtakudesuUrl_1.default)() + "?p=" + query);
+                    }
+                    else {
+                        const originalUrl = await (0, getFinalUrl_1.default)(otakudesuUrl, {
+                            useCache: true,
+                        });
+                        if (!originalUrl.includes((0, getOtakudesuUrl_1.default)())) {
+                            const query = (0, getSlug_1.default)(originalUrl);
+                            otakudesuUrls.push((0, getOtakudesuUrl_1.default)() + query);
                         }
                         else {
-                            let originalUrl1 = await (0, getFinalUrl_1.default)(otakudesuUrl, {
-                                useCache: true,
-                            });
-                            if (!originalUrl1.includes((0, getOtakudesuUrl_1.default)())) {
-                                const query = (0, getSlug_1.default)(originalUrl1);
-                                originalUrl1 = (0, getOtakudesuUrl_1.default)() + query;
-                            }
-                            const originalUrl2 = await (0, getFinalUrl_1.default)(originalUrl1, {
-                                useCache: true,
-                            });
-                            originalUrl = originalUrl2;
+                            otakudesuUrls.push(originalUrl);
                         }
-                        const slug = (0, getSlug_1.default)(originalUrl);
-                        const href = "/otakudesu/anime/" + slug;
-                        sinopsis.connections.push({
-                            judul,
-                            slug,
-                            href,
-                            otakudesuUrl: originalUrl,
-                        });
-                    }
-                    catch (error) {
-                        console.log(error.message);
                     }
                 }
+                const originalUrls = await (0, getFinalUrls_1.default)(otakudesuUrls, {
+                    useCache: true,
+                }, {
+                    timeout: 10000,
+                }, {
+                    delay: 100,
+                    retries: 2,
+                });
+                const finalConnections = [];
+                for (let k = 0; k < originalUrls.length; k++) {
+                    const judul = sinopsis.connections[k].judul;
+                    const originalUrl = originalUrls[k];
+                    const slug = (0, getSlug_1.default)(originalUrl);
+                    const href = "/otakudesu/anime/" + slug;
+                    finalConnections.push({
+                        judul,
+                        slug,
+                        href,
+                        originalUrl,
+                    });
+                }
+                sinopsis.connections = finalConnections;
             }
         }
     }

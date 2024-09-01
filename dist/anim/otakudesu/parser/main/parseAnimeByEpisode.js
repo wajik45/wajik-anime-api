@@ -7,7 +7,7 @@ exports.default = parseAnimeByEpisode;
 const getSlug_1 = __importDefault(require("../../../../helpers/getSlug"));
 const parseDetail_1 = __importDefault(require("../parseDetail"));
 const getOtakudesuUrl_1 = __importDefault(require("../../utils/getOtakudesuUrl"));
-async function parseAnimeByEpisode($) {
+function parseAnimeByEpisode($) {
     const downloadUrl = {};
     const episodeList = [];
     let episodeSebelumnya = null;
@@ -50,7 +50,7 @@ async function parseAnimeByEpisode($) {
             .replace(/\ /g, "_");
         const size = $(downloadElement).find("i").text();
         const urlElements = $(downloadElement).find("a").toArray();
-        urlElements.forEach(async (urlElement) => {
+        urlElements.forEach((urlElement) => {
             const judul = $(urlElement).text();
             const url = $(urlElement).attr("href") || (0, getOtakudesuUrl_1.default)();
             urls.push({
