@@ -12,6 +12,7 @@ export default async function parseSinopsis(
     paragraphs: [],
     connections: [],
   };
+  const otakudesuUrls: string[] = [];
   const animeElements = cheerioElement.toArray();
 
   for (let i = 0; i < animeElements.length; i++) {
@@ -24,7 +25,6 @@ export default async function parseSinopsis(
         sinopsis.paragraphs.push(sinopsisText);
       } else {
         const connectionElements = $(animeElement).find("a").toArray();
-        const otakudesuUrls: string[] = [];
 
         for (let j = 0; j < connectionElements.length; j++) {
           const connectionElement = connectionElements[j];
@@ -36,10 +36,7 @@ export default async function parseSinopsis(
             judul,
           });
 
-          if (
-            otakudesuUrl.includes("otakudesu") &&
-            !otakudesuUrl.includes(getOtakudesuUrl())
-          ) {
+          if (otakudesuUrl.includes("://otakudesu")) {
             const query = getSlug(otakudesuUrl);
 
             otakudesuUrls.push(getOtakudesuUrl() + "?p=" + query);
@@ -48,12 +45,14 @@ export default async function parseSinopsis(
               useCache: true,
             });
 
-            if (!originalUrl.includes(getOtakudesuUrl())) {
-              const query = getSlug(originalUrl);
+            if (originalUrl.includes("?p=")) {
+              if (!originalUrl.includes(getOtakudesuUrl())) {
+                const query = getSlug(originalUrl);
 
-              otakudesuUrls.push(getOtakudesuUrl() + query);
-            } else {
-              otakudesuUrls.push(originalUrl);
+                otakudesuUrls.push(getOtakudesuUrl() + query);
+              } else {
+                otakudesuUrls.push(originalUrl);
+              }
             }
           }
         }

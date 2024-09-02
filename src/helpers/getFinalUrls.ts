@@ -36,7 +36,7 @@ export default async function getFinalUrls(
     if (response.status === "fulfilled") {
       return response.value;
     } else {
-      return null;
+      return "";
     }
   });
 

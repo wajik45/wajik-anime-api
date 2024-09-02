@@ -27,7 +27,7 @@ async function getFinalUrls(urls, cacheOptions, axiosOptions, retryOptions) {
             return response.value;
         }
         else {
-            return null;
+            return "";
         }
     });
     return results;

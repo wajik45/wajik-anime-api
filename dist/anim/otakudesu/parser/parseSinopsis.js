@@ -13,6 +13,7 @@ async function parseSinopsis($, cheerioElement) {
         paragraphs: [],
         connections: [],
     };
+    const otakudesuUrls = [];
     const animeElements = cheerioElement.toArray();
     for (let i = 0; i < animeElements.length; i++) {
         const animeElement = animeElements[i];
@@ -23,7 +24,6 @@ async function parseSinopsis($, cheerioElement) {
             }
             else {
                 const connectionElements = $(animeElement).find("a").toArray();
-                const otakudesuUrls = [];
                 for (let j = 0; j < connectionElements.length; j++) {
                     const connectionElement = connectionElements[j];
                     const judul = $(connectionElement).text();
@@ -31,8 +31,7 @@ async function parseSinopsis($, cheerioElement) {
                     sinopsis.connections.push({
                         judul,
                     });
-                    if (otakudesuUrl.includes("otakudesu") &&
-                        !otakudesuUrl.includes((0, getOtakudesuUrl_1.default)())) {
+                    if (otakudesuUrl.includes("://otakudesu")) {
                         const query = (0, getSlug_1.default)(otakudesuUrl);
                         otakudesuUrls.push((0, getOtakudesuUrl_1.default)() + "?p=" + query);
                     }
@@ -40,12 +39,14 @@ async function parseSinopsis($, cheerioElement) {
                         const originalUrl = await (0, getFinalUrl_1.default)(otakudesuUrl, {
                             useCache: true,
                         });
-                        if (!originalUrl.includes((0, getOtakudesuUrl_1.default)())) {
-                            const query = (0, getSlug_1.default)(originalUrl);
-                            otakudesuUrls.push((0, getOtakudesuUrl_1.default)() + query);
-                        }
-                        else {
-                            otakudesuUrls.push(originalUrl);
+                        if (originalUrl.includes("?p=")) {
+                            if (!originalUrl.includes((0, getOtakudesuUrl_1.default)())) {
+                                const query = (0, getSlug_1.default)(originalUrl);
+                                otakudesuUrls.push((0, getOtakudesuUrl_1.default)() + query);
+                            }
+                            else {
+                                otakudesuUrls.push(originalUrl);
+                            }
                         }
                     }
                 }
