@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <title>Error</title>
+  </head>
+  <body style="text-align: center">
+    <div class="root">
+      <h1 style="padding: 2rem 1rem">Error</h1>
+      <a href="/">back to home</a>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+      if (location.pathname.endsWith(".html") || location.pathname.endsWith(".html/")) {
+        location.replace("/");
+      }
+    </script>
+  </body>
+</html>

@@ -1,11 +1,20 @@
-import cache from "memory-cache";
+import { LRUCache } from "lru-cache";
+import getMinFromMs from "./getMinFromMs";
 
-export function getFromCache(key: any) {
+export const defaultTTL = getMinFromMs(60 * 12);
+
+const cache = new LRUCache({
+  max: 100,
+  allowStale: false,
+  updateAgeOnGet: false,
+  updateAgeOnHas: false,
+  ttl: defaultTTL,
+});
+
+export function getFromCache(key: any): any {
   return cache.get(key);
 }
 
-export function putInCache(key: any, value: unknown, ttl: number) {
-  cache.put(key, value, ttl);
+export function putInCache(key: any, value: any, ttl?: number): void {
+  cache.set(key, value, { ttl });
 }
-
-export const defaultTTL = 1000 * 60 * 60 * 24;

@@ -1,36 +1,24 @@
+import path from "path";
 import express from "express";
 import cors from "cors";
 import PORT from "./helpers/PORT";
-import OtakudesuRouter from "./anim/otakudesu/routes/otakudesu.routes";
-import setPayload from "./helpers/setPayload";
+import MainRouter from "./routes/main.routes";
+import otakudesu from "./anims/otakudesu/otakudesu.info";
+import OtakudesuRouter from "./anims/otakudesu/routes/otakudesu.routes";
+import samehadaku from "./anims/samehadaku/samehadaku.info";
+import SamehadakuRouter from "./anims/samehadaku/routes/samehadaku.routes";
 
 const app = express();
 
 app.use(cors());
-app.use(OtakudesuRouter);
+app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message:
-      "WAJIK ANIME API IS READY 🔥🔥, SEMUA RUTE ADA DI RESPONSE BERDASARKAN SOURCE",
-    important:
-      "SERING PANTAU BOSKUU DOMAIN SERING BERUBAH BISA EDIT DI src/helpers/animeUrl.ts",
-    sources: [
-      {
-        name: "otakudesu",
-        route: "/otakudesu",
-      },
-      {
-        name: "coming soon",
-        route: "",
-      },
-    ],
-  });
-});
+// SUMBER
+app.use(otakudesu.baseRoute, OtakudesuRouter);
+app.use(samehadaku.baseRoute, SamehadakuRouter);
 
-app.use("*", (req, res) => {
-  res.status(404).json(setPayload(res));
-});
+// HAHAHAHHAHAHA
+app.use(MainRouter);
 
 app.listen(PORT, () => {
   console.log(`SERVER BERJALAN DI http://localhost:${PORT}`);
