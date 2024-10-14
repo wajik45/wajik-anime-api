@@ -6,7 +6,7 @@ const otakudesuInfo: AnimeSource = {
   title: "Otakudesu",
   baseUrl: animeUrls.otakudesu,
   baseRoute: "/otakudesu",
-  message: "di vercel ada beberapa rute yang 403 forbidden, mungkin di non serverless aman",
+  message: "di vercel ada beberapa rute yang 403 forbidden, di local aman, mungkin non serverless juga aman",
   ok: true,
   routesView: [
     {

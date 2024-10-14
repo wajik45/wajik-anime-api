@@ -9,7 +9,7 @@
     "dev": "nodemon"
   },
   "keywords": [],
-  "author": "",
+  "author": "wajik45",
   "license": "MIT",
   "devDependencies": {
     "@types/cors": "^2.8.17",

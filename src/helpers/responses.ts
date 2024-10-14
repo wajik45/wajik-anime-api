@@ -1,4 +1,5 @@
-import type { Response } from "express";
+import type { Request, Response } from "express";
+import { setCache } from "./cache";
 import http from "http";
 
 export interface Pagination {
@@ -56,8 +57,10 @@ function generatePayload(res: Response, props?: PayloadProps): Payload {
 }
 
 export const responseJSON = {
-  ok(res: Response, props?: PayloadProps): void {
-    res.status(200).json(generatePayload(res, props));
+  ok(req: Request, res: Response, payloadProps?: PayloadProps): void {
+    setCache(req, payloadProps);
+
+    res.status(200).json(generatePayload(res, payloadProps));
   },
   error(res: Response, error: any): void {
     if (typeof error?.status === "number") {

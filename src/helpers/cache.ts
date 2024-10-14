@@ -1,3 +1,5 @@
+import type { Request } from "express";
+import type { PayloadProps } from "./responses";
 import { LRUCache } from "lru-cache";
 import getMinFromMs from "./getMinFromMs";
 
@@ -17,4 +19,12 @@ export function getFromCache(key: any): any {
 
 export function putInCache(key: any, value: any, ttl?: number): void {
   cache.set(key, value, { ttl });
+}
+
+export function setCache(req: Request, payloadProps?: PayloadProps) {
+  const { cache } = req;
+
+  if (cache?.key && payloadProps) {
+    putInCache(cache.key, payloadProps, cache.ttl);
+  }
 }

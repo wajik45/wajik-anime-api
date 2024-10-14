@@ -1,6 +1,6 @@
 import type { AxiosRequestConfig } from "axios";
 import { load, type CheerioAPI } from "cheerio";
-import { wajikFetch, type CacheConfig } from "../services/dataFetcher";
+import { wajikFetch } from "../services/dataFetcher";
 import { animeConfig } from "../configs/animeConfig";
 import path from "path";
 
@@ -159,7 +159,6 @@ export default class Scraper {
       path: string;
       initialData: T;
       axiosConfig?: AxiosRequestConfig<any>;
-      cacheConfig?: CacheConfig;
     },
     parser: ($: CheerioAPI, data: T) => Promise<T>
   ): Promise<T> {
@@ -167,12 +166,9 @@ export default class Scraper {
     const htmlData = await wajikFetch(
       this.baseUrl + path,
       {
-        axiosConfig: {
-          method: "GET",
-          responseType: "text",
-          ...props.axiosConfig,
-        },
-        cacheConfig: props.cacheConfig,
+        method: "GET",
+        responseType: "text",
+        ...props.axiosConfig,
       },
       (response) => {
         // ALL SOURCES
@@ -214,7 +210,6 @@ export default class Scraper {
         }
       }
     );
-
     const $ = load(htmlData);
     const data = parser($, this.deepCopy(props.initialData));
 

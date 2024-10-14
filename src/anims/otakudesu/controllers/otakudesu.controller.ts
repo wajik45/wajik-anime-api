@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { responseJSON, responseHTML } from "../../../helpers/responses";
 import { getPageParam, getQParam } from "../../../helpers/queryParams";
 import path from "path";
-import getViewData from "../../../helpers/getViewData";
 import otakudesuInfo from "../otakudesu.info";
 import OtakudesuParser from "../parsers/Parser";
 
@@ -24,9 +23,9 @@ const OtakudesuController = {
 
   getMainViewData(req: Request, res: Response): void {
     try {
-      const data = getViewData(otakudesuInfo, "otakudesuView");
+      const data = otakudesuInfo;
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -36,7 +35,7 @@ const OtakudesuController = {
     try {
       const data = await parser.parseHome();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -46,7 +45,7 @@ const OtakudesuController = {
     try {
       const data = await parser.parseSchedule();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -56,7 +55,7 @@ const OtakudesuController = {
     try {
       const data = await parser.parseAllAnimes();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -66,7 +65,7 @@ const OtakudesuController = {
     try {
       const data = await parser.parseAllGenres();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -77,7 +76,7 @@ const OtakudesuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parseOngoingAnimes(page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error: any) {
       responseJSON.error(res, error);
     }
@@ -88,7 +87,7 @@ const OtakudesuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parseCompletedAnimes(page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error: any) {
       responseJSON.error(res, error);
     }
@@ -99,7 +98,7 @@ const OtakudesuController = {
       const q = getQParam(req);
       const data = await parser.parseSearch(q);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error: any) {
       responseJSON.error(res, error);
     }
@@ -111,7 +110,7 @@ const OtakudesuController = {
       const { genreId } = req.params;
       const { data, pagination } = await parser.parseGenreAnimes(genreId, page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -122,7 +121,7 @@ const OtakudesuController = {
       const { animeId } = req.params;
       const data = await parser.parseAnimeDetails(animeId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -133,7 +132,7 @@ const OtakudesuController = {
       const { episodeId } = req.params;
       const data = await parser.parseAnimeEpisode(episodeId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -144,7 +143,7 @@ const OtakudesuController = {
       const { episodeId } = req.params;
       const data = await parser.parseAnimeServers(episodeId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -155,7 +154,7 @@ const OtakudesuController = {
       const { serverId } = req.params;
       const data = await parser.parseServerUrl(serverId);
 
-      responseJSON.ok(res, { data, message: "methods: (GET, POST), biasanya pake ajax bree" });
+      responseJSON.ok(req, res, { data, message: "methods: (GET, POST), biasanya pake ajax bree" });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -166,7 +165,7 @@ const OtakudesuController = {
       const { batchId } = req.params;
       const data = await parser.parseAnimeBatch(batchId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }

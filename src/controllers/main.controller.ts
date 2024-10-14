@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { responseJSON, responseHTML } from "../helpers/responses";
-import getViewData from "../helpers/getViewData";
 import otakudesu from "../anims/otakudesu/otakudesu.info";
 import samehadaku from "../anims/samehadaku/samehadaku.info";
 import path from "path";
@@ -48,9 +47,9 @@ const MainController = {
         return newData;
       }
 
-      const data = getViewData(getData(), "mainView");
+      const data = getData();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }

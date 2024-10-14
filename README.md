@@ -14,6 +14,7 @@ MOHON IZIN ABANG SUMBER, sumber bisa bertambah, req/dm rekomendasi situs yang ba
 
 # Installasi
 
+- NodeJS >= 20.x
 - Jalankan perintah di terminal
 
 ```sh
@@ -73,7 +74,7 @@ npm run dev
         "episodes": 11,
         "releaseDay": "Jum'at",
         "latestReleaseDate": "05 Jan",
-        "slug": "drstn-s3-p2-sub-indo",
+        "animeId": "drstn-s3-p2-sub-indo",
         "href": "/otakudesu/anime/drstn-s3-p2-sub-indo/",
         "otakudesuUrl": "https://otakudesu.cloud/anime/drstn-s3-p2-sub-indo/"
       },

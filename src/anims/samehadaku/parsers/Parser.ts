@@ -3,7 +3,6 @@ import * as IPE from "./interfaces/IParser.extra";
 import type { Server } from "../../../interfaces/IGlobal";
 import { wajikFetch } from "../../../services/dataFetcher";
 import ExtraSamehadakuParser from "./Parser.extra";
-import getMinFromMs from "../../../helpers/getMinFromMs";
 
 export default class SamehadakuParser extends ExtraSamehadakuParser {
   parseHome(): Promise<IP.Home> {
@@ -15,7 +14,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           batch: { href: "", samehadakuUrl: "", batchList: [] },
           movie: { href: "", samehadakuUrl: "", animeList: [] },
         },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, data) => {
         data.recent.href = this.generateHref("recent");
@@ -64,7 +62,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: "/daftar-anime-2",
         initialData: { genreList: [] },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const genreElements = $(".filter_act.genres .tax_fil").toArray();
@@ -98,7 +95,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: "/daftar-anime-2/?list",
         initialData: { list: [] },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, data) => {
         const listElements = $(".listpst .listbar").toArray();
@@ -139,7 +135,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: "/jadwal",
         initialData: { days: [] },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, data) => {
         const dayElements = $(".schedule .tab-dates").toArray();
@@ -175,7 +170,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/anime-terbaru/page/${page}`,
         initialData: { data: { episodeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         const animeElements = $(".post-show ul li").toArray();
@@ -202,7 +196,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/daftar-anime-2/page/${page}/?status=Currently%20Airing&order=${order}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         data = this.parseAnimeCard2List($, "anime");
@@ -218,7 +211,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/daftar-anime-2/page/${page}/?status=Finished%20Airing&order=${order}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         data = this.parseAnimeCard2List($, "anime");
@@ -234,7 +226,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/daftar-anime-2/page/${page}/?order=popular`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         data = this.parseAnimeCard2List($, "anime");
@@ -250,7 +241,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/anime-movie/page/${page}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         data = this.parseAnimeCard2List($, "anime");
@@ -266,7 +256,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/daftar-batch/page/${page}`,
         initialData: { data: { batchList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         data.batchList = this.parseAnimeCard2List($, "batch").animeList;
@@ -282,7 +271,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/page/${page}/?s=${q}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         data = this.parseAnimeCard2List($, "anime");
@@ -298,7 +286,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/genre/${genreId}/page/${page}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         data = this.parseAnimeCard2List($, "anime");
@@ -335,7 +322,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           batchList: [],
           episodeList: [],
         },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const info = this.parseDetails($);
@@ -427,7 +413,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           recommendedEpisodeList: [],
           movie: { href: "", samehadakuUrl: "", animeList: [] },
         },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const getDefaultStreaming = async () => {
@@ -438,20 +423,14 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           const typeData = el.attr("data-type");
 
           const result = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
-            axiosConfig: {
-              method: "POST",
-              responseType: "text",
-              data: new URLSearchParams({
-                action: "player_ajax",
-                post: postData || "",
-                nume: numeData || "",
-                type: typeData || "",
-              }),
-            },
-            cacheConfig: {
-              useCache: true,
-              key: `server:${this.enrawr(`${postData}-${numeData}-${typeData}`)}`,
-            },
+            method: "POST",
+            responseType: "text",
+            data: new URLSearchParams({
+              action: "player_ajax",
+              post: postData || "",
+              nume: numeData || "",
+              type: typeData || "",
+            }),
           });
 
           return this.generateSrcFromIframeTag(result);
@@ -568,7 +547,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       {
         path: `/${episodeId}`,
         initialData: { qualities: [] },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const serverElements = $(".server_option ul li .east_player_option").toArray();
@@ -620,21 +598,14 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     const url = await wajikFetch(
       `${this.baseUrl}/wp-admin/admin-ajax.php`,
       {
-        axiosConfig: {
-          method: "POST",
-          responseType: "text",
-          data: new URLSearchParams({
-            action: "player_ajax",
-            post: post || "",
-            nume: nume || "",
-            type: type || "",
-          }),
-        },
-        cacheConfig: {
-          useCache: true,
-          TTL: getMinFromMs(2),
-          key: `server:${serverId}`,
-        },
+        method: "POST",
+        responseType: "text",
+        data: new URLSearchParams({
+          action: "player_ajax",
+          post: post || "",
+          nume: nume || "",
+          type: type || "",
+        }),
       },
       (response) => {
         if (!response.data) throw { status: 400 };
@@ -676,7 +647,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           downloadUrl: { formats: [] },
           recommendedAnimeList: [],
         },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const details = this.parseDetails($);

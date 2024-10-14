@@ -3,7 +3,6 @@ import * as IPE from "./interfaces/IParser.extra";
 import type { Quality, Server, Url } from "../../../interfaces/IGlobal";
 import { getFromCache, putInCache } from "../../../helpers/cache";
 import { wajikFetch } from "../../../services/dataFetcher";
-import getMinFromMs from "../../../helpers/getMinFromMs";
 import ExtraOtakudesuParser from "./Parser.extra";
 
 export default class OtakudesuParser extends ExtraOtakudesuParser {
@@ -15,7 +14,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
           ongoing: { href: "", otakudesuUrl: "", animeList: [] },
           completed: { href: "", otakudesuUrl: "", animeList: [] },
         },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, data) => {
         data.ongoing.href = this.generateHref("ongoing");
@@ -72,7 +70,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: "/jadwal-rilis",
         initialData: { days: [] },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, data) => {
         const scheduleElements = $(".kglist321").toArray();
@@ -110,7 +107,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: "/anime-list",
         initialData: { list: [] },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, data) => {
         const listElements = $(".bariskelom").toArray();
@@ -148,7 +144,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: "/genre-list",
         initialData: { genreList: [] },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const genreElements = $(".genres li a").toArray();
@@ -178,7 +173,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: `/ongoing-anime/page/${page}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         const animeElements = $(".venutama ul li").toArray();
@@ -205,7 +199,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: `/complete-anime/page/${page}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         const animeElements = $(".venutama ul li").toArray();
@@ -232,7 +225,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: `?s=${q}&post_type=anime`,
         initialData: { animeList: [] },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, data) => {
         const animeElements = $("ul.chivsrc li").toArray();
@@ -257,7 +249,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: `/genres/${genreId}/page/${page}`,
         initialData: { data: { animeList: [] } },
-        cacheConfig: { useCache: true, TTL: getMinFromMs(10) },
       },
       async ($, { data, pagination }) => {
         const animeElements = $(".venser .col-anime").toArray();
@@ -302,7 +293,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
           episodeList: [],
           recommendedAnimeList: [],
         },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const { info, genreList } = this.parseDetails($, $(".infozingle p"));
@@ -404,7 +394,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
             episodeList: [],
           },
         },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const { info, genreList } = this.parseDetails($, $(".infozingle p"));
@@ -511,7 +500,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       {
         path: `/episode/${episodeId}`,
         initialData: { qualities: [] },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const serverElements = $(".mirrorstream ul").toArray();
@@ -520,13 +508,11 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
         if (!getFromCache(nonceCacheKey)) {
           // MISS
           const nonce = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
-            axiosConfig: {
-              method: "POST",
-              responseType: "json",
-              data: new URLSearchParams({
-                action: this.derawr("ff675Di7Ck7Ehf895hE7hBBi6E7Bk68k"),
-              }),
-            },
+            method: "POST",
+            responseType: "json",
+            data: new URLSearchParams({
+              action: this.derawr("ff675Di7Ck7Ehf895hE7hBBi6E7Bk68k"),
+            }),
           });
 
           if (nonce?.data) putInCache(nonceCacheKey, nonce.data);
@@ -577,22 +563,15 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
 
     const getUrlData = async (nonce: any) => {
       return await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
-        axiosConfig: {
-          method: "POST",
-          responseType: "json",
-          data: new URLSearchParams({
-            id: serverIdArr[0],
-            i: serverIdArr[1],
-            q: serverIdArr[2],
-            action: this.derawr("7f8A5AhE8g558Ai8k9AAikD7gkECBgD9"),
-            nonce: nonce,
-          }),
-        },
-        cacheConfig: {
-          useCache: true,
-          TTL: getMinFromMs(2),
-          key: `server:${serverId}`,
-        },
+        method: "POST",
+        responseType: "json",
+        data: new URLSearchParams({
+          id: serverIdArr[0],
+          i: serverIdArr[1],
+          q: serverIdArr[2],
+          action: this.derawr("7f8A5AhE8g558Ai8k9AAikD7gkECBgD9"),
+          nonce: nonce,
+        }),
       });
     };
 
@@ -612,13 +591,11 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
       if (error.status === 403) {
         // MISS
         const nonce = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
-          axiosConfig: {
-            method: "POST",
-            responseType: "json",
-            data: new URLSearchParams({
-              action: this.derawr("ff675Di7Ck7Ehf895hE7hBBi6E7Bk68k"),
-            }),
-          },
+          method: "POST",
+          responseType: "json",
+          data: new URLSearchParams({
+            action: this.derawr("ff675Di7Ck7Ehf895hE7hBBi6E7Bk68k"),
+          }),
         });
 
         if (nonce?.data) {
@@ -659,7 +636,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
           genreList: [],
           downloadUrl: { formats: [] },
         },
-        cacheConfig: { useCache: true },
       },
       async ($, data) => {
         const info: any = {};

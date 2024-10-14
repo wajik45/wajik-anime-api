@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import { responseJSON, responseHTML } from "../../../helpers/responses";
 import { getOrderParam, getPageParam, getQParam } from "../../../helpers/queryParams";
-import getViewData from "../../../helpers/getViewData";
 import SamehadakuParser from "../parsers/Parser";
 import samehadakuInfo from "../samehadaku.info";
 import path from "path";
@@ -24,9 +23,9 @@ const SamehadakuController = {
 
   getMainViewData(req: Request, res: Response): void {
     try {
-      const data = getViewData(samehadakuInfo, "samehadakuView");
+      const data = samehadakuInfo;
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -36,7 +35,7 @@ const SamehadakuController = {
     try {
       const data = await parser.parseHome();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -46,7 +45,7 @@ const SamehadakuController = {
     try {
       const data = await parser.parseAllGenres();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -56,7 +55,7 @@ const SamehadakuController = {
     try {
       const data = await parser.parseAllAnimes();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -66,7 +65,7 @@ const SamehadakuController = {
     try {
       const data = await parser.parseSchedule();
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -77,7 +76,7 @@ const SamehadakuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parseRecentEpisodes(page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -89,7 +88,7 @@ const SamehadakuController = {
       const order = getOrderParam(req);
       const { data, pagination } = await parser.parseOngoingAnimes(page, order);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -101,7 +100,7 @@ const SamehadakuController = {
       const order = getOrderParam(req);
       const { data, pagination } = await parser.parseCompletedAnimes(page, order);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -112,7 +111,7 @@ const SamehadakuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parsePopularAnimes(page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -123,7 +122,7 @@ const SamehadakuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parseMovies(page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -134,7 +133,7 @@ const SamehadakuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parseBatches(page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -146,7 +145,7 @@ const SamehadakuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parseSearch(q, page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -158,7 +157,7 @@ const SamehadakuController = {
       const page = getPageParam(req);
       const { data, pagination } = await parser.parseGenreAnimes(genreId, page);
 
-      responseJSON.ok(res, { data, pagination });
+      responseJSON.ok(req, res, { data, pagination });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -169,7 +168,7 @@ const SamehadakuController = {
       const { animeId } = req.params;
       const data = await parser.parseAnimeDetails(animeId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -180,7 +179,7 @@ const SamehadakuController = {
       const { episodeId } = req.params;
       const data = await parser.parseAnimeEpisode(episodeId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -191,7 +190,7 @@ const SamehadakuController = {
       const { episodeId } = req.params;
       const data = await parser.parseAnimeServers(episodeId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -202,7 +201,7 @@ const SamehadakuController = {
       const { serverId } = req.params;
       const data = await parser.parseServerUrl(serverId);
 
-      responseJSON.ok(res, { data, message: "methods: (GET, POST), biasanya pake ajax bree" });
+      responseJSON.ok(req, res, { data, message: "methods: (GET, POST), biasanya pake ajax bree" });
     } catch (error) {
       responseJSON.error(res, error);
     }
@@ -213,7 +212,7 @@ const SamehadakuController = {
       const { batchId } = req.params;
       const data = await parser.parseAnimeBatch(batchId);
 
-      responseJSON.ok(res, { data });
+      responseJSON.ok(req, res, { data });
     } catch (error) {
       responseJSON.error(res, error);
     }

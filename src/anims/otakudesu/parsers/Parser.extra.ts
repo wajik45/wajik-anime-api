@@ -3,7 +3,6 @@ import type { CheerioAPI, Cheerio, Element } from "cheerio";
 import type { Pagination } from "../../../helpers/responses";
 import { getFinalUrl, getFinalUrls } from "../../../services/dataFetcher";
 import Scraper from "../../../scrapers/Scraper";
-import getMinFromMs from "../../../helpers/getMinFromMs";
 
 export default class ExtraOtakudesuParser extends Scraper {
   protected parseAnimeCard1(el: Cheerio<Element>): IPE.AnimeCard1 {
@@ -192,9 +191,7 @@ export default class ExtraOtakudesuParser extends Scraper {
 
                 otakudesuUrls.push(this.baseUrl + "?p=" + query);
               } else {
-                const originalUrl = await getFinalUrl(otakudesuUrl, {
-                  cacheConfig: { useCache: true, TTL: getMinFromMs(5) },
-                });
+                const originalUrl = await getFinalUrl(otakudesuUrl);
 
                 if (originalUrl.includes("?p=")) {
                   if (!originalUrl.includes(this.baseUrl)) {
@@ -210,7 +207,6 @@ export default class ExtraOtakudesuParser extends Scraper {
 
             const originalUrls = await getFinalUrls(otakudesuUrls, {
               axiosConfig: { timeout: 10000 },
-              cacheConfig: { useCache: true, TTL: getMinFromMs(5) },
               retryConfig: { delay: 100, retries: 2 },
             });
 
@@ -250,7 +246,7 @@ export default class ExtraOtakudesuParser extends Scraper {
 
     const oriUrl = el.attr("href");
 
-    data.title = el.text();
+    data.title = el.text().trim();
     data.otakudesuUrl = this.getSourceUrl(oriUrl);
     data.slug = this.getSlugFromUrl(oriUrl);
     data.href = this.generateHref(to, data.slug);
