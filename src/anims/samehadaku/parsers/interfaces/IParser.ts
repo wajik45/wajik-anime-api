@@ -81,7 +81,7 @@ export interface AnimeEpisode {
   poster: string;
   releasedOn: string;
   defaultStreamingUrl: string;
-  streamingUrlsHref: string;
+  server: { qualities: Quality[] };
   hasPrevEpisode: boolean;
   prevEpisode: IPE.NavEpisodeLinkCard | null;
   hasNextEpisode: boolean;
@@ -95,10 +95,6 @@ export interface AnimeEpisode {
     samehadakuUrl?: string;
     animeList: IPE.AnimeCard3[];
   };
-}
-
-export interface AnimeServers {
-  qualities: Quality[];
 }
 
 export interface ServerUrl {

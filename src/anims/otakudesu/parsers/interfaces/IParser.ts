@@ -76,11 +76,11 @@ export interface AnimeEpisode {
   title: string;
   releaseTime: string;
   defaultStreamingUrl: string;
-  serversHref: string;
   hasPrevEpisode: boolean;
   prevEpisode: IPE.NavEpisodeLinkCard | null;
   hasNextEpisode: boolean;
   nextEpisode: IPE.NavEpisodeLinkCard | null;
+  server: { qualities: Quality[] };
   downloadUrl: { qualities: Quality[] };
   info: {
     credit: string;
@@ -90,10 +90,6 @@ export interface AnimeEpisode {
     genreList: IPE.GenreLinkCard[];
     episodeList: IPE.EpisodeLinkCard[];
   };
-}
-
-export interface AnimeServers {
-  qualities: Quality[];
 }
 
 export interface ServerUrl {

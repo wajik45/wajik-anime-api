@@ -138,17 +138,6 @@ const OtakudesuController = {
     }
   },
 
-  async getAnimeServers(req: Request, res: Response): Promise<void> {
-    try {
-      const { episodeId } = req.params;
-      const data = await parser.parseAnimeServers(episodeId);
-
-      responseJSON.ok(req, res, { data });
-    } catch (error) {
-      responseJSON.error(res, error);
-    }
-  },
-
   async getServerUrl(req: Request, res: Response): Promise<void> {
     try {
       const { serverId } = req.params;

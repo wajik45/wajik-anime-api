@@ -402,13 +402,13 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           poster: "",
           releasedOn: "",
           defaultStreamingUrl: "",
-          streamingUrlsHref: "",
           hasPrevEpisode: false,
           prevEpisode: null,
           hasNextEpisode: false,
           nextEpisode: null,
           synopsis: { paragraphs: [], connections: [] },
           genreList: [],
+          server: { qualities: [] },
           downloadUrl: { formats: [] },
           recommendedEpisodeList: [],
           movie: { href: "", samehadakuUrl: "", animeList: [] },
@@ -440,8 +440,57 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         data.poster = $(".thumb img").attr("src") || "";
         data.releasedOn = $(".time-post").text().trim();
         data.defaultStreamingUrl = await getDefaultStreaming();
-        data.streamingUrlsHref = `${this.baseRoute}/episode/${episodeId}/servers`;
         data.downloadUrl = this.parseDownloadUrl($);
+
+        const serverElements = $(".server_option ul li .east_player_option").toArray();
+
+        type Q = "unknown" | "360p" | "480p" | "720p" | "1080p" | "4k";
+
+        const serverQualities: { title: Q; serverList: Server[] }[] = [
+          { title: "unknown", serverList: [] },
+          { title: "360p", serverList: [] },
+          { title: "480p", serverList: [] },
+          { title: "720p", serverList: [] },
+          { title: "1080p", serverList: [] },
+          { title: "4k", serverList: [] },
+        ];
+
+        let fixedServerQualities: string[] = [];
+
+        serverQualities.forEach((quality) => {
+          serverElements.forEach((serverElement) => {
+            if (!$(serverElement).attr("style")?.includes("not-allowed")) {
+              const title = $(serverElement).text().trim();
+
+              if (title.toLowerCase().includes(quality.title)) {
+                fixedServerQualities.push(title);
+              }
+            }
+          });
+        });
+
+        serverQualities.forEach((quality) => {
+          serverElements.forEach((serverElement) => {
+            if (!$(serverElement).attr("style")?.includes("not-allowed")) {
+              const title = $(serverElement).text().trim();
+              const postData = $(serverElement).attr("data-post") || "";
+              const numeData = $(serverElement).attr("data-nume") || "";
+              const typeData = $(serverElement).attr("data-type") || "";
+              const serverId = this.enrawr(`${postData}-${numeData}-${typeData}`);
+              const href = this.generateHref("server", serverId);
+
+              if (title.toLowerCase().includes(quality.title)) {
+                quality.serverList.push({ title, serverId, href });
+              } else {
+                if (!fixedServerQualities.includes(title) && quality.title === "unknown") {
+                  quality.serverList.push({ title, serverId, href });
+                }
+              }
+            }
+          });
+        });
+
+        data.server.qualities = serverQualities;
 
         const navigationElements = $(".naveps .nvs:not(.nvsc) a").toArray();
 
@@ -534,53 +583,6 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         });
 
         const isEmpty = !data.title && data.genreList.length === 0 && data.downloadUrl.formats.length === 0;
-
-        this.checkEmptyData(isEmpty);
-
-        return data;
-      }
-    );
-  }
-
-  parseAnimeServers(episodeId: string): Promise<IP.AnimeServers> {
-    return this.scrape<IP.AnimeServers>(
-      {
-        path: `/${episodeId}`,
-        initialData: { qualities: [] },
-      },
-      async ($, data) => {
-        const serverElements = $(".server_option ul li .east_player_option").toArray();
-
-        type Q = "360p" | "480p" | "720p" | "1080p" | "4k";
-
-        const qualities: { title: Q; serverList: Server[] }[] = [
-          { title: "360p", serverList: [] },
-          { title: "480p", serverList: [] },
-          { title: "720p", serverList: [] },
-          { title: "1080p", serverList: [] },
-          { title: "4k", serverList: [] },
-        ];
-
-        qualities.forEach((quality) => {
-          serverElements.forEach((serverElement) => {
-            if (!$(serverElement).attr("style")?.includes("not-allowed")) {
-              const title = $(serverElement).text().trim();
-              const postData = $(serverElement).attr("data-post") || "";
-              const numeData = $(serverElement).attr("data-nume") || "";
-              const typeData = $(serverElement).attr("data-type") || "";
-              const serverId = this.enrawr(`${postData}-${numeData}-${typeData}`);
-              const href = this.generateHref("server", serverId);
-
-              if (title.toLowerCase().includes(quality.title)) {
-                quality.serverList.push({ title, serverId, href });
-              }
-            }
-          });
-        });
-
-        data.qualities = qualities;
-
-        const isEmpty = data.qualities.length === 0;
 
         this.checkEmptyData(isEmpty);
 

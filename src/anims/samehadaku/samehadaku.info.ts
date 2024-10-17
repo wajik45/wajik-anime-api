@@ -86,11 +86,6 @@ const samehadakuInfo: AnimeSource = {
       routeParams: [par.episodeIdRouteParam],
     },
     {
-      title: "Semua server buat nonton",
-      route: "/episode/{episodeId}/servers",
-      routeParams: [par.episodeIdRouteParam],
-    },
-    {
       title: "Link server buat nonton",
       route: "/server/{serverId}",
       routeParams: [par.serverIdRouteParam],

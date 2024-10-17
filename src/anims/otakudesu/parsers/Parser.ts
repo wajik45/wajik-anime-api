@@ -379,11 +379,11 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
           title: "",
           releaseTime: "",
           defaultStreamingUrl: "",
-          serversHref: "",
           hasPrevEpisode: false,
           prevEpisode: null,
           hasNextEpisode: false,
           nextEpisode: null,
+          server: { qualities: [] },
           downloadUrl: { qualities: [] },
           info: {
             credit: "",
@@ -401,11 +401,55 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
         data.title = $(".posttl").text();
         data.releaseTime = $(".kategoz .fa.fa-clock-o").next().text();
         data.defaultStreamingUrl = $(".responsive-embed-stream iframe").attr("src") || "";
-        data.serversHref = `${this.baseRoute}/episode/${episodeId}/servers`;
         data.info.genreList = genreList;
         data.info.type = info.tipe;
 
         delete info["tipe"];
+
+        const serverElements = $(".mirrorstream ul").toArray();
+        const nonceCacheKey = "otakudesuNonce";
+
+        if (!getFromCache(nonceCacheKey)) {
+          // MISS
+          const nonce = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
+            method: "POST",
+            responseType: "json",
+            data: new URLSearchParams({
+              action: this.derawr("ff675Di7Ck7Ehf895hE7hBBi6E7Bk68k"),
+            }),
+          });
+
+          if (nonce?.data) putInCache(nonceCacheKey, nonce.data);
+        }
+
+        serverElements.forEach((serverElement) => {
+          const serverList: Server[] = [];
+          const title = $(serverElement)
+            .text()
+            .split(" ")
+            .join("")
+            .trim()
+            .replace($(serverElement).find("li").text().split(" ").join("").trim(), "")
+            .toLowerCase()
+            .replaceAll("mirror", "");
+          const urlElements = $(serverElement).find("li a").toArray();
+
+          urlElements.forEach((urlElement) => {
+            const title = $(urlElement).text();
+            const dataContent = $(urlElement).attr("data-content") || "";
+            const data = JSON.parse(Buffer.from(dataContent, "base64").toString());
+            const serverId = this.enrawr(`${data.id}-${data.i}-${data.q}`);
+            const href = this.generateHref("server", serverId);
+
+            serverList.push({
+              title,
+              serverId,
+              href,
+            });
+          });
+
+          data.server.qualities.push({ title, serverList });
+        });
 
         const navigationElements = $(".flir a").toArray();
 
@@ -487,67 +531,6 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
           !data.prevEpisode &&
           !data.nextEpisode &&
           data.downloadUrl.qualities.length === 0;
-
-        this.checkEmptyData(isEmpty);
-
-        return data;
-      }
-    );
-  }
-
-  parseAnimeServers(episodeId: string): Promise<IP.AnimeServers> {
-    return this.scrape<IP.AnimeServers>(
-      {
-        path: `/episode/${episodeId}`,
-        initialData: { qualities: [] },
-      },
-      async ($, data) => {
-        const serverElements = $(".mirrorstream ul").toArray();
-        const nonceCacheKey = "otakudesuNonce";
-
-        if (!getFromCache(nonceCacheKey)) {
-          // MISS
-          const nonce = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
-            method: "POST",
-            responseType: "json",
-            data: new URLSearchParams({
-              action: this.derawr("ff675Di7Ck7Ehf895hE7hBBi6E7Bk68k"),
-            }),
-          });
-
-          if (nonce?.data) putInCache(nonceCacheKey, nonce.data);
-        }
-
-        serverElements.forEach((serverElement) => {
-          const serverList: Server[] = [];
-          const title = $(serverElement)
-            .text()
-            .split(" ")
-            .join("")
-            .trim()
-            .replace($(serverElement).find("li").text().split(" ").join("").trim(), "")
-            .toLowerCase()
-            .replaceAll("mirror", "");
-          const urlElements = $(serverElement).find("li a").toArray();
-
-          urlElements.forEach((urlElement) => {
-            const title = $(urlElement).text();
-            const dataContent = $(urlElement).attr("data-content") || "";
-            const data = JSON.parse(Buffer.from(dataContent, "base64").toString());
-            const serverId = this.enrawr(`${data.id}-${data.i}-${data.q}`);
-            const href = this.generateHref("server", serverId);
-
-            serverList.push({
-              title,
-              serverId,
-              href,
-            });
-          });
-
-          data.qualities.push({ title, serverList });
-        });
-
-        const isEmpty = data.qualities.length === 0;
 
         this.checkEmptyData(isEmpty);
 

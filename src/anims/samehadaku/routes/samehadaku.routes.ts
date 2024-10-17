@@ -20,7 +20,6 @@ SamehadakuRouter.get("/search", cacheMiddleware(10), C.getSearch);
 SamehadakuRouter.get("/genres/:genreId", cacheMiddleware(10), C.getGenreAnimes);
 SamehadakuRouter.get("/anime/:animeId", cacheMiddleware(), C.getAnimeDetails);
 SamehadakuRouter.get("/episode/:episodeId", cacheMiddleware(), C.getAnimeEpisode);
-SamehadakuRouter.get("/episode/:episodeId/servers", cacheMiddleware(), C.getAnimeServers);
 SamehadakuRouter.get("/server/:serverId", cacheMiddleware(3), C.getServerUrl);
 SamehadakuRouter.post("/server/:serverId", cacheMiddleware(3), C.getServerUrl);
 SamehadakuRouter.get("/batch/:batchId", cacheMiddleware(), C.getAnimeBatch);
