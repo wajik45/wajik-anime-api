@@ -1,24 +1,31 @@
+import "./libs/moduleAlias";
+import { clientCache } from "@middlewares/cache";
+import { otakudesuInfo, otakudesuRoute } from "@otakudesu/index";
+import { samehadakuInfo, samehadakuRoute } from "@samehadaku/index";
+import mainRoute from "@routes/mainRoute";
+import errorHandler from "@middlewares/errorHandler";
+import animeConfig from "@configs/animeConfig";
 import path from "path";
 import express from "express";
 import cors from "cors";
-import PORT from "./helpers/PORT";
-import MainRouter from "./routes/main.routes";
-import otakudesu from "./anims/otakudesu/otakudesu.info";
-import OtakudesuRouter from "./anims/otakudesu/routes/otakudesu.routes";
-import samehadaku from "./anims/samehadaku/samehadaku.info";
-import SamehadakuRouter from "./anims/samehadaku/routes/samehadaku.routes";
 
+const { PORT } = animeConfig;
 const app = express();
 
+// MIDDLEWARES
 app.use(cors());
-app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(clientCache(1));
 
-// SUMBER
-app.use(otakudesu.baseRoute, OtakudesuRouter);
-app.use(samehadaku.baseRoute, SamehadakuRouter);
+// RUTE SUMBER
+app.use(otakudesuInfo.baseUrlPath, otakudesuRoute);
+app.use(samehadakuInfo.baseUrlPath, samehadakuRoute);
 
-// HAHAHAHHAHAHA
-app.use(MainRouter);
+// RUTE UTAMA
+app.use(mainRoute);
+
+// ERROR HANDLER
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`SERVER BERJALAN DI http://localhost:${PORT}`);

@@ -1,12 +1,12 @@
-import * as IPE from "./interfaces/IParser.extra";
+import * as ISPE from "./interfaces/ISamehadakuParserExtra";
 import type { Cheerio, CheerioAPI, Element } from "cheerio";
-import type { Pagination } from "../../../helpers/responses";
-import type { Format, Quality, Url } from "../../../interfaces/IGlobal";
-import Scraper from "../../../scrapers/Scraper";
+import type { Pagination } from "@helpers/payload";
+import type { Format, Quality, Url } from "@interfaces/IGlobal";
+import AnimeScraper from "@scrapers/AnimeScraper";
 
-export default class ExtraSamehadakuParser extends Scraper {
-  protected parseAnimeCard1(el: Cheerio<Element>, to: "episode" | "batch"): IPE.AnimeCard1 {
-    const data: IPE.AnimeCard1 = {
+export default class SamehadakuParserExtra extends AnimeScraper {
+  protected parseAnimeCard1(el: Cheerio<Element>, to: "episode" | "batch"): ISPE.AnimeCard1 {
+    const data: ISPE.AnimeCard1 = {
       title: "",
       poster: "",
       episodes: "",
@@ -20,24 +20,33 @@ export default class ExtraSamehadakuParser extends Scraper {
     const oriUrl = el.find(".thumb a").attr("href");
 
     data.title = el.find(".dtla .entry-title").text();
-    data.poster = el.find(".thumb img").attr("src") || "";
+    data.poster = this.str(el.find(".thumb img").attr("src"));
     data.episodes = el.find(".dtla span:not(.author) [itemprop=name]").text();
-    data.releasedOn = el.find(".dtla span:last").text().toLowerCase().replace("released on:", "").trim();
-    data.samehadakuUrl = this.getSourceUrl(oriUrl);
+    data.releasedOn = el
+      .find(".dtla span:last")
+      .text()
+      .toLowerCase()
+      .replace("released on:", "")
+      .trim();
+    data.samehadakuUrl = this.generateSourceUrl(oriUrl);
 
     if (to === "episode") {
-      data.episodeId = this.getSlugFromUrl(oriUrl);
+      data.episodeId = this.generateSlug(oriUrl);
       data.href = this.generateHref(to, data.episodeId);
     } else {
-      data.batchId = this.getSlugFromUrl(oriUrl);
+      data.batchId = this.generateSlug(oriUrl);
       data.href = this.generateHref(to, data.batchId);
     }
 
     return data;
   }
 
-  protected parseAnimeCard2($: CheerioAPI, el: Cheerio<Element>, to: "anime" | "batch"): IPE.AnimeCard2 {
-    const data: IPE.AnimeCard2 = {
+  protected parseAnimeCard2(
+    $: CheerioAPI,
+    el: Cheerio<Element>,
+    to: "anime" | "batch"
+  ): ISPE.AnimeCard2 {
+    const data: ISPE.AnimeCard2 = {
       title: "",
       poster: "",
       type: "",
@@ -53,17 +62,17 @@ export default class ExtraSamehadakuParser extends Scraper {
     const oriUrl = el.find(".animposx a").attr("href");
 
     data.title = el.find(".animposx .data .title").text();
-    data.poster = el.find(".animposx .content-thumb img").attr("src") || "";
+    data.poster = this.str(el.find(".animposx .content-thumb img").attr("src"));
     data.type = el.find(".animposx .content-thumb .type").text();
     data.score = el.find(".animposx .content-thumb .score").text().trim();
     data.status = el.find(".animposx .data .type").text();
-    data.samehadakuUrl = this.getSourceUrl(oriUrl);
+    data.samehadakuUrl = this.generateSourceUrl(oriUrl);
 
     if (to === "anime") {
-      data.animeId = this.getSlugFromUrl(oriUrl);
+      data.animeId = this.generateSlug(oriUrl);
       data.href = this.generateHref(to, data.animeId);
     } else {
-      data.batchId = this.getSlugFromUrl(oriUrl);
+      data.batchId = this.generateSlug(oriUrl);
       data.href = this.generateHref(to, data.batchId);
     }
 
@@ -83,8 +92,8 @@ export default class ExtraSamehadakuParser extends Scraper {
     return data;
   }
 
-  protected parseAnimeCard3($: CheerioAPI, el: Cheerio<Element>): IPE.AnimeCard3 {
-    const data: IPE.AnimeCard3 = {
+  protected parseAnimeCard3($: CheerioAPI, el: Cheerio<Element>): ISPE.AnimeCard3 {
+    const data: ISPE.AnimeCard3 = {
       title: "",
       poster: "",
       releaseDate: "",
@@ -97,10 +106,10 @@ export default class ExtraSamehadakuParser extends Scraper {
     const oriUrl = el.find(".lftinfo h2 a").attr("href");
 
     data.title = el.find(".lftinfo h2").text();
-    data.poster = el.find(".imgseries img").attr("src") || "";
+    data.poster = this.str(el.find(".imgseries img").attr("src"));
     data.releaseDate = el.find(".lftinfo span:last").text().trim();
-    data.samehadakuUrl = this.getSourceUrl(oriUrl);
-    data.animeId = this.getSlugFromUrl(oriUrl);
+    data.samehadakuUrl = this.generateSourceUrl(oriUrl);
+    data.animeId = this.generateSlug(oriUrl);
     data.href = this.generateHref("anime", data.animeId);
 
     const genreElements = el.find(".lftinfo span:first a").toArray();
@@ -119,8 +128,8 @@ export default class ExtraSamehadakuParser extends Scraper {
     return data;
   }
 
-  protected parseAnimeCard4(el: Cheerio<Element>): IPE.AnimeCard4 {
-    const data: IPE.AnimeCard4 = {
+  protected parseAnimeCard4(el: Cheerio<Element>): ISPE.AnimeCard4 {
+    const data: ISPE.AnimeCard4 = {
       title: "",
       poster: "",
       type: "",
@@ -135,20 +144,20 @@ export default class ExtraSamehadakuParser extends Scraper {
     const oriUrl = el.find("a").attr("href");
 
     data.title = el.find(".data .title").text().trim();
-    data.poster = el.find(".content-thumb img").attr("src") || "";
+    data.poster = this.str(el.find(".content-thumb img").attr("src"));
     data.type = el.find(".content-thumb .type").text();
     data.score = el.find(".content-thumb .score").text().trim().replace("x", "");
     data.estimation = el.find(".data_tw .ltseps").text().trim();
-    data.samehadakuUrl = this.getSourceUrl(oriUrl);
-    data.animeId = this.getSlugFromUrl(oriUrl);
+    data.samehadakuUrl = this.generateSourceUrl(oriUrl);
+    data.animeId = this.generateSlug(oriUrl);
     data.href = this.generateHref("anime", data.animeId);
     data.genres = el.find(".data .type").text();
 
     return data;
   }
 
-  protected parseLinkCard(el: Cheerio<Element>, to: string): IPE.LinkCard {
-    const data: IPE.LinkCard = {
+  protected parseLinkCard(el: Cheerio<Element>, to: string): ISPE.LinkCard {
+    const data: ISPE.LinkCard = {
       title: "",
       slug: "",
       href: "",
@@ -158,15 +167,15 @@ export default class ExtraSamehadakuParser extends Scraper {
     const oriUrl = el.attr("href");
 
     data.title = el.text();
-    data.samehadakuUrl = this.getSourceUrl(oriUrl);
-    data.slug = this.getSlugFromUrl(oriUrl);
+    data.samehadakuUrl = this.generateSourceUrl(oriUrl);
+    data.slug = this.generateSlug(oriUrl);
     data.href = this.generateHref(to, data.slug);
 
     return data;
   }
 
-  protected parseAnimeCard2List($: CheerioAPI, to: "anime" | "batch"): IPE.AnimeCard2List {
-    const data: IPE.AnimeCard2List = { animeList: [] };
+  protected parseAnimeCard2List($: CheerioAPI, to: "anime" | "batch"): ISPE.AnimeCard2List {
+    const data: ISPE.AnimeCard2List = { animeList: [] };
     const animeElements = $(".animpost .animepost").toArray();
 
     animeElements.forEach((animeElement) => {
@@ -200,7 +209,7 @@ export default class ExtraSamehadakuParser extends Scraper {
   }
 
   protected parseSynopsis($: CheerioAPI) {
-    const synopsis: IPE.Synopsis = { paragraphs: [], connections: [] };
+    const synopsis: ISPE.Synopsis = { paragraphs: [], connections: [] };
     const connectionElements = $(".desc a").toArray();
 
     connectionElements.forEach((connectionElement) => {
@@ -242,7 +251,7 @@ export default class ExtraSamehadakuParser extends Scraper {
 
         urlElements.forEach((urlElement) => {
           const title = $(urlElement).text();
-          const url = $(urlElement).attr("href") || "";
+          const url = this.str($(urlElement).attr("href"));
 
           urls.push({ title, url });
         });

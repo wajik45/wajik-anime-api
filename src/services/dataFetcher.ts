@@ -24,7 +24,10 @@ export async function wajikFetch(
   return data;
 }
 
-export async function getFinalUrl(url: string, axiosConfig?: AxiosRequestConfig<any>): Promise<any> {
+export async function getFinalUrl(
+  url: string,
+  axiosConfig?: AxiosRequestConfig<any>
+): Promise<any> {
   const response = await axios.head(url, {
     ...axiosConfig,
     headers: {

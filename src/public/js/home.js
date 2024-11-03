@@ -22,15 +22,12 @@
             <h4>Deskripsi ada di response berdasarkan sumber!</h4>
             <h4>
                 Sering pantau bossku domain sumber sering berubah bisa update di
-                <span class="value">"src/helpers/animeUrl.ts"</span>
+                <span class="value">"src/configs/animeConfig.ts"</span>
             </h4>
             <h4>
                 Untuk menghapus sumber ada di
-                <span class="value">"src/anim/{sumber yang ingin dihapus}"</span> kemudian hapus baris kode sumber yang sudah tidak diperlukan di
-                <span class="value">"src/index.ts"</span> dan <span class="value">"src/controllers/main.controller.ts"</span>
-            </h4>
-            <h4>
-                config tipis2 di <span class="value">"src/configs/animeConfig.ts"</span>
+                <span class="value">"src/anims/{sumber yang ingin dihapus}"</span> kemudian hapus baris kode sumber yang sudah tidak diperlukan di
+                <span class="value">"src/index.ts"</span> dan <span class="value">"src/controllers/mainController.ts"</span>
             </h4>
             <div class="card-wrapper">
                 <h3>Sources :</h3>

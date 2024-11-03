@@ -48,7 +48,7 @@
                   return `
                     <div class="card">
                       <h4>${route.title}</h4>
-                      <p><span class="key"><span class="dot"></span>Get</span> : <a href="${data.baseRoute + route.route}" target="_blank">${data.baseRoute + route.route}</a></p>
+                      <p><span class="key"><span class="dot"></span>Get</span> : <a href="${data.baseUrlPath + route.route}" target="_blank">${data.baseUrlPath + route.route}</a></p>
                       <p><span class="key"><span class="dot"></span>Route Params</span> : <span class="value">${route.routeParams?.length > 0 ? "" : "none"}</span></p>
                       ${
                         route.routeParams?.length > 0

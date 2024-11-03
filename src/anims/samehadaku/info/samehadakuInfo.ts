@@ -1,6 +1,8 @@
-import * as par from "../../helpers/paramsView";
-import type { AnimeSource, QueryParam } from "../../interfaces/IGlobal";
-import animeUrls from "../../helpers/animeUrls";
+import * as par from "@helpers/paramsView";
+import type { AnimeSource, QueryParam } from "@interfaces/IGlobal";
+import animeConfig from "@configs/animeConfig";
+
+const { baseUrl } = animeConfig;
 
 const orderQueryParam: QueryParam = {
   key: "order",
@@ -13,8 +15,8 @@ const orderQueryParam: QueryParam = {
 
 const samehadakuInfo: AnimeSource = {
   title: "Samehadaku",
-  baseUrl: animeUrls.samehadaku,
-  baseRoute: "/samehadaku",
+  baseUrl: baseUrl.samehadaku,
+  baseUrlPath: "/samehadaku",
   message: "🔥",
   ok: true,
   routesView: [

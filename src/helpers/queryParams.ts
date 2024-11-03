@@ -1,6 +1,7 @@
 import type { Request } from "express";
+import { setResponseError } from "./error";
 
-function getErrorMessage(key: string, validValue: string[]): string {
+function setErrorMessage(key: string, validValue: string[]): string {
   return `masukkan query parameter: ?${key}=${validValue.join("|")}`;
 }
 
@@ -14,10 +15,7 @@ export function getOrderParam(req: Request): string {
 
       return order;
     } else {
-      throw {
-        status: 400,
-        message: getErrorMessage("order", orders),
-      };
+      setResponseError(400, setErrorMessage("order", orders));
     }
   }
 
@@ -28,13 +26,13 @@ export function getPageParam(req: Request): number {
   const page = Number(req.query.page) || 1;
   const error = {
     status: 400,
-    message: getErrorMessage("page", ["number +"]),
+    message: setErrorMessage("page", ["number +"]),
   };
 
-  if (page < 1) throw error;
+  if (page < 1) setResponseError(error.status, error.message);
 
   if (isNaN(Number(req.query.page)) && req.query.page !== undefined) {
-    throw error;
+    setResponseError(error.status, error.message);
   }
 
   return page;
@@ -44,10 +42,7 @@ export function getQParam(req: Request): string {
   const q = req.query.q;
 
   if (q === undefined) {
-    throw {
-      status: 400,
-      message: getErrorMessage("q", ["string"]),
-    };
+    setResponseError(400, setErrorMessage("q", ["string"]));
   }
 
   if (typeof q === "string") return q;

@@ -1,13 +1,13 @@
-import * as IP from "./interfaces/IParser";
-import * as IPE from "./interfaces/IParser.extra";
-import type { Quality, Server, Url } from "../../../interfaces/IGlobal";
-import { getFromCache, putInCache } from "../../../helpers/cache";
-import { wajikFetch } from "../../../services/dataFetcher";
-import ExtraOtakudesuParser from "./Parser.extra";
+import * as IOP from "./interfaces/IOtakudesuParser";
+import * as IOPE from "./interfaces/IOtakudesuParserExtra";
+import type { Quality, Server, Url } from "@interfaces/IGlobal";
+import { wajikFetch } from "@services/dataFetcher";
+import { cache } from "@libs/lruCache";
+import OtakudesuParserExtra from "./OtakudesuParserExtra";
 
-export default class OtakudesuParser extends ExtraOtakudesuParser {
-  parseHome(): Promise<IP.Home> {
-    return this.scrape<IP.Home>(
+export default class OtakudesuParser extends OtakudesuParserExtra {
+  parseHome(): Promise<IOP.Home> {
+    return this.scrape<IOP.Home>(
       {
         path: "/",
         initialData: {
@@ -23,7 +23,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
 
         linkElements.forEach((linkElement, index) => {
           const listType = index === 0 ? "ongoing" : index === 1 ? "completed" : "error";
-          const otakudesuUrl = this.getSourceUrl($(linkElement).attr("href"));
+          const otakudesuUrl = this.generateSourceUrl($(linkElement).attr("href"));
 
           if (listType !== "error") {
             if (listType === "ongoing") {
@@ -56,7 +56,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
           });
         });
 
-        const isEmpty = data.ongoing.animeList.length === 0 && data.completed.animeList.length === 0;
+        const isEmpty =
+          data.ongoing.animeList.length === 0 && data.completed.animeList.length === 0;
 
         this.checkEmptyData(isEmpty);
 
@@ -65,8 +66,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseSchedule(): Promise<IP.Schedule> {
-    return this.scrape<IP.Schedule>(
+  parseSchedule(): Promise<IOP.Schedule> {
+    return this.scrape<IOP.Schedule>(
       {
         path: "/jadwal-rilis",
         initialData: { days: [] },
@@ -75,7 +76,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
         const scheduleElements = $(".kglist321").toArray();
 
         scheduleElements.forEach((scheduleElement) => {
-          const animeList: IPE.AnimeLinkCard[] = [];
+          const animeList: IOPE.AnimeLinkCard[] = [];
           const day = $(scheduleElement).find("h2").text();
           const animeElements = $(scheduleElement).find("ul li a").toArray();
 
@@ -102,8 +103,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseAllAnimes(): Promise<IP.AllAnimes> {
-    return this.scrape<IP.AllAnimes>(
+  parseAllAnimes(): Promise<IOP.AllAnimes> {
+    return this.scrape<IOP.AllAnimes>(
       {
         path: "/anime-list",
         initialData: { list: [] },
@@ -112,7 +113,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
         const listElements = $(".bariskelom").toArray();
 
         listElements.forEach((listElement) => {
-          const animeList: IPE.AnimeLinkCard[] = [];
+          const animeList: IOPE.AnimeLinkCard[] = [];
           const startWith = $(listElement).find(".barispenz a").text();
           const animeElements = $(listElement).find(".jdlbar a").toArray();
 
@@ -139,8 +140,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseAllGenres(): Promise<IP.AllGenres> {
-    return this.scrape<IP.AllGenres>(
+  parseAllGenres(): Promise<IOP.AllGenres> {
+    return this.scrape<IOP.AllGenres>(
       {
         path: "/genre-list",
         initialData: { genreList: [] },
@@ -168,8 +169,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseOngoingAnimes(page: number): Promise<IP.OngoingAnimes> {
-    return this.scrape<IP.OngoingAnimes>(
+  parseOngoingAnimes(page: number): Promise<IOP.OngoingAnimes> {
+    return this.scrape<IOP.OngoingAnimes>(
       {
         path: `/ongoing-anime/page/${page}`,
         initialData: { data: { animeList: [] } },
@@ -194,8 +195,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseCompletedAnimes(page: number): Promise<IP.CompletedAnimes> {
-    return this.scrape<IP.CompletedAnimes>(
+  parseCompletedAnimes(page: number): Promise<IOP.CompletedAnimes> {
+    return this.scrape<IOP.CompletedAnimes>(
       {
         path: `/complete-anime/page/${page}`,
         initialData: { data: { animeList: [] } },
@@ -220,8 +221,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseSearch(q: string): Promise<IP.Search> {
-    return this.scrape<IP.Search>(
+  parseSearch(q: string): Promise<IOP.Search> {
+    return this.scrape<IOP.Search>(
       {
         path: `?s=${q}&post_type=anime`,
         initialData: { animeList: [] },
@@ -244,8 +245,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseGenreAnimes(genreId: string, page: number): Promise<IP.GenreAnimes> {
-    return this.scrape<IP.GenreAnimes>(
+  parseGenreAnimes(genreId: string, page: number): Promise<IOP.GenreAnimes> {
+    return this.scrape<IOP.GenreAnimes>(
       {
         path: `/genres/${genreId}/page/${page}`,
         initialData: { data: { animeList: [] } },
@@ -271,8 +272,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseAnimeDetails(animeId: string): Promise<IP.AnimeDetails> {
-    return this.scrape<IP.AnimeDetails>(
+  parseAnimeDetails(animeId: string): Promise<IOP.AnimeDetails> {
+    return this.scrape<IOP.AnimeDetails>(
       {
         path: `/anime/${animeId}`,
         initialData: {
@@ -301,13 +302,13 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
         data.japanese = info.japanese;
         data.score = info.skor;
         data.producers = info.produser;
-        data.type = info.tipe;
+        data.type = info.tIOPE;
         data.status = info.status;
-        data.episodes = Number(info.totalEpisode) || null;
+        data.episodes = this.num(info.totalEpisode);
         data.duration = info.durasi;
         data.aired = info.tanggalRilis;
         data.studios = info.studio;
-        data.poster = $("#venkonten .fotoanime img").attr("src") || "";
+        data.poster = this.str($("#venkonten .fotoanime img").attr("src"));
         data.synopsis = await this.parseSynopsis($, $(".sinopc p"), true);
         data.genreList = genreList;
 
@@ -319,8 +320,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
           listElements.forEach((listElement) => {
             const title = $(listElement).find("a").text();
             const oriUrl = $(listElement).find("a").attr("href");
-            const otakudesuUrl = this.getSourceUrl(oriUrl);
-            const slug = this.getSlugFromUrl(oriUrl);
+            const otakudesuUrl = this.generateSourceUrl(oriUrl);
+            const slug = this.generateSlug(oriUrl);
             const listType = index === 0 ? "batch" : index === 1 ? "episode" : "error";
 
             if (listType !== "error") {
@@ -333,18 +334,17 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
                 };
               } else {
                 data.episodeList.push({
-                  title:
-                    Number(
-                      title
-                        .toLowerCase()
-                        .split("episode")[1]
-                        .trim()
-                        .split(" ")
-                        .filter((str, index) => {
-                          if (!isNaN(Number(str)) && index === 0) return str;
-                        })
-                        .join("")
-                    ) || null,
+                  title: this.num(
+                    title
+                      .toLowerCase()
+                      .split("episode")[1]
+                      .trim()
+                      .split(" ")
+                      .filter((str, index) => {
+                        if (!isNaN(Number(str)) && index === 0) return str;
+                      })
+                      .join("")
+                  ),
                   episodeId: slug,
                   href: this.generateHref("episode", slug),
                   otakudesuUrl,
@@ -371,8 +371,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  parseAnimeEpisode(episodeId: string): Promise<IP.AnimeEpisode> {
-    return this.scrape<IP.AnimeEpisode>(
+  parseAnimeEpisode(episodeId: string): Promise<IOP.AnimeEpisode> {
+    return this.scrape<IOP.AnimeEpisode>(
       {
         path: `/episode/${episodeId}`,
         initialData: {
@@ -400,16 +400,16 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
 
         data.title = $(".posttl").text();
         data.releaseTime = $(".kategoz .fa.fa-clock-o").next().text();
-        data.defaultStreamingUrl = $(".responsive-embed-stream iframe").attr("src") || "";
+        data.defaultStreamingUrl = this.str($(".responsive-embed-stream iframe").attr("src"));
         data.info.genreList = genreList;
-        data.info.type = info.tipe;
+        data.info.type = info.tIOPE;
 
-        delete info["tipe"];
+        delete info["tIOPE"];
 
         const serverElements = $(".mirrorstream ul").toArray();
         const nonceCacheKey = "otakudesuNonce";
 
-        if (!getFromCache(nonceCacheKey)) {
+        if (!cache.get(nonceCacheKey)) {
           // MISS
           const nonce = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
             method: "POST",
@@ -419,7 +419,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
             }),
           });
 
-          if (nonce?.data) putInCache(nonceCacheKey, nonce.data);
+          if (nonce?.data) cache.set(nonceCacheKey, nonce.data);
         }
 
         serverElements.forEach((serverElement) => {
@@ -436,7 +436,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
 
           urlElements.forEach((urlElement) => {
             const title = $(urlElement).text();
-            const dataContent = $(urlElement).attr("data-content") || "";
+            const dataContent = this.str($(urlElement).attr("data-content"));
             const data = JSON.parse(Buffer.from(dataContent, "base64").toString());
             const serverId = this.enrawr(`${data.id}-${data.i}-${data.q}`);
             const href = this.generateHref("server", serverId);
@@ -488,7 +488,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
 
           urlElements.forEach((urlElement) => {
             const title = $(urlElement).text();
-            const url = $(urlElement).attr("href") || "";
+            const url = this.str($(urlElement).attr("href"));
 
             urls.push({
               title,
@@ -506,10 +506,12 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
         const episodeElements = $(".keyingpost li").toArray();
 
         episodeElements.forEach((episodeElement) => {
-          const title = Number($(episodeElement).find("a").text().trim().replace("Episode", "").trim()) || null;
+          const title = this.num(
+            $(episodeElement).find("a").text().trim().replace("Episode", "").trim()
+          );
           const oriUrl = $(episodeElement).find("a").attr("href");
-          const otakudesuUrl = this.getSourceUrl(oriUrl);
-          const episodeId = this.getSlugFromUrl(oriUrl);
+          const otakudesuUrl = this.generateSourceUrl(oriUrl);
+          const episodeId = this.generateSlug(oriUrl);
           const href = this.generateHref("episode", episodeId);
 
           data.info.episodeList.push({
@@ -539,8 +541,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     );
   }
 
-  async parseServerUrl(serverId: string): Promise<IP.ServerUrl> {
-    const data: IP.ServerUrl = { url: "" };
+  async parseServerUrl(serverId: string): Promise<IOP.ServerUrl> {
+    const data: IOP.ServerUrl = { url: "" };
     const nonceCacheKey = "otakudesuNonce";
     const serverIdArr = this.derawr(serverId).split("-");
 
@@ -566,7 +568,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
 
     try {
       // HIT
-      const nonce = getFromCache(nonceCacheKey);
+      const nonce = cache.get(nonceCacheKey);
       const url = await getUrlData(nonce);
 
       data.url = getUrl(getHtml(url.data));
@@ -582,7 +584,7 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
         });
 
         if (nonce?.data) {
-          putInCache(nonceCacheKey, nonce.data);
+          cache.set(nonceCacheKey, nonce.data);
 
           const response = await getUrlData(nonce.data);
 
@@ -600,8 +602,8 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
     return data;
   }
 
-  parseAnimeBatch(batchId: string): Promise<IP.AnimeBatch> {
-    return this.scrape<IP.AnimeBatch>(
+  parseAnimeBatch(batchId: string): Promise<IOP.AnimeBatch> {
+    return this.scrape<IOP.AnimeBatch>(
       {
         path: `/batch/${batchId}`,
         initialData: {
@@ -691,20 +693,21 @@ export default class OtakudesuParser extends ExtraOtakudesuParser {
 
         data.title = info.judul;
         data.score = info.rating;
-        data.episodes = Number(info.episodes) || null;
+        data.episodes = this.num(info.episodes);
 
         delete info["judul"];
         delete info["rating"];
         delete info["episodes"];
 
-        data.poster = $(".animeinfo img").attr("src") || "";
+        data.poster = this.str($(".animeinfo img").attr("src"));
 
         const result = {
           ...data,
           ...info,
         };
 
-        const isEmpty = !data.title && data.genreList.length === 0 && data.downloadUrl.formats.length === 0;
+        const isEmpty =
+          !data.title && data.genreList.length === 0 && data.downloadUrl.formats.length === 0;
 
         this.checkEmptyData(isEmpty);
 

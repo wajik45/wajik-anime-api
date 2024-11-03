@@ -1,12 +1,15 @@
-import * as par from "../../helpers/paramsView";
-import type { AnimeSource } from "../../interfaces/IGlobal";
-import animeUrls from "../../helpers/animeUrls";
+import * as par from "@helpers/paramsView";
+import type { AnimeSource } from "@interfaces/IGlobal";
+import animeConfig from "@configs/animeConfig";
+
+const { baseUrl } = animeConfig;
 
 const otakudesuInfo: AnimeSource = {
   title: "Otakudesu",
-  baseUrl: animeUrls.otakudesu,
-  baseRoute: "/otakudesu",
-  message: "di vercel ada beberapa rute yang 403 forbidden, di local aman, mungkin non serverless juga aman",
+  baseUrl: baseUrl.otakudesu,
+  baseUrlPath: "/otakudesu",
+  message:
+    "di vercel ada beberapa rute yang 403 forbidden, di local aman, mungkin non serverless juga aman",
   ok: true,
   routesView: [
     {

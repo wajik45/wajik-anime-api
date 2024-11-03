@@ -1,55 +1,55 @@
-import * as IPE from "./IParser.extra";
-import type { Pagination } from "../../../../helpers/responses";
-import type { Format, Quality } from "../../../../interfaces/IGlobal";
+import * as IOPE from "./IOtakudesuParserExtra";
+import type { Pagination } from "@helpers/payload";
+import type { Format, Quality } from "@interfaces/IGlobal";
 
 export interface Home {
   ongoing: {
     href?: string;
     otakudesuUrl?: string;
-    animeList: IPE.AnimeCard2[];
+    animeList: IOPE.AnimeCard2[];
   };
 
   completed: {
     href?: string;
     otakudesuUrl?: string;
-    animeList: IPE.AnimeCard1[];
+    animeList: IOPE.AnimeCard1[];
   };
 }
 
 export interface Schedule {
   days: {
     day: string;
-    animeList: IPE.AnimeLinkCard[];
+    animeList: IOPE.AnimeLinkCard[];
   }[];
 }
 
 export interface AllAnimes {
   list: {
     startWith: string;
-    animeList: IPE.AnimeLinkCard[];
+    animeList: IOPE.AnimeLinkCard[];
   }[];
 }
 
 export interface AllGenres {
-  genreList: IPE.GenreLinkCard[];
+  genreList: IOPE.GenreLinkCard[];
 }
 
 export interface OngoingAnimes {
-  data: { animeList: IPE.AnimeCard2[] };
+  data: { animeList: IOPE.AnimeCard2[] };
   pagination?: Pagination;
 }
 
 export interface CompletedAnimes {
-  data: { animeList: IPE.AnimeCard1[] };
+  data: { animeList: IOPE.AnimeCard1[] };
   pagination?: Pagination;
 }
 
 export interface Search {
-  animeList: IPE.AnimeCard3[];
+  animeList: IOPE.AnimeCard3[];
 }
 
 export interface GenreAnimes {
-  data: { animeList: IPE.AnimeCard4[] };
+  data: { animeList: IOPE.AnimeCard4[] };
   pagination?: Pagination;
 }
 
@@ -65,11 +65,11 @@ export interface AnimeDetails {
   aired: string;
   studios: string;
   poster: string;
-  synopsis: IPE.Synopsis;
-  batch: IPE.BatchLinkCard | null;
-  genreList: IPE.GenreLinkCard[];
-  episodeList: IPE.EpisodeLinkCard[];
-  recommendedAnimeList: IPE.AnimeCard5[];
+  synopsis: IOPE.Synopsis;
+  batch: IOPE.BatchLinkCard | null;
+  genreList: IOPE.GenreLinkCard[];
+  episodeList: IOPE.EpisodeLinkCard[];
+  recommendedAnimeList: IOPE.AnimeCard5[];
 }
 
 export interface AnimeEpisode {
@@ -77,9 +77,9 @@ export interface AnimeEpisode {
   releaseTime: string;
   defaultStreamingUrl: string;
   hasPrevEpisode: boolean;
-  prevEpisode: IPE.NavEpisodeLinkCard | null;
+  prevEpisode: IOPE.NavEpisodeLinkCard | null;
   hasNextEpisode: boolean;
-  nextEpisode: IPE.NavEpisodeLinkCard | null;
+  nextEpisode: IOPE.NavEpisodeLinkCard | null;
   server: { qualities: Quality[] };
   downloadUrl: { qualities: Quality[] };
   info: {
@@ -87,8 +87,8 @@ export interface AnimeEpisode {
     encoder: string;
     duration: string;
     type: string;
-    genreList: IPE.GenreLinkCard[];
-    episodeList: IPE.EpisodeLinkCard[];
+    genreList: IOPE.GenreLinkCard[];
+    episodeList: IOPE.EpisodeLinkCard[];
   };
 }
 
@@ -108,6 +108,6 @@ export interface AnimeBatch {
   producers: string;
   aired: string;
   credit: string;
-  genreList: IPE.GenreLinkCard[];
+  genreList: IOPE.GenreLinkCard[];
   downloadUrl: { formats: Format[] };
 }

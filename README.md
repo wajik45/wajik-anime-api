@@ -10,7 +10,7 @@ MOHON IZIN ABANG SUMBER, sumber bisa bertambah, req/dm rekomendasi situs yang ba
 1. otakudesu: https://otakudesu.cloud
 2. samehadaku: https://samehadaku.email
 
-- domain sering berubah jangan lupa pantau terus untuk edit url ada di di "src/helpers/animeUrls.ts"
+- domain sering berubah jangan lupa pantau terus untuk edit url ada di di "src/configs/animeConfig.ts"
 
 # Installasi
 
@@ -38,8 +38,7 @@ npm run dev
 ```
 
 - Server akan berjalan di http://localhost:3001
-- Untuk menghapus sumber ada di "src/anim/{sumber yang ingin dihapus}" kemudian hapus baris kode sumber yang sudah tidak diperlukan di "src/index.ts" dan "src/controllers/main.controller.ts"
-- config tipis2 di "src/configs/animeConfig.ts"
+- Untuk menghapus sumber ada di "src/anims/{sumber yang ingin dihapus}" kemudian hapus baris kode sumber yang sudah tidak diperlukan di "src/index.ts" dan "src/controllers/mainController.ts"
 
 # Routes
 
@@ -94,4 +93,4 @@ npm run dev
 
 ### CONTOH UI
 
-Belom bikin breeh..
+Nyusul kalo sempet..

@@ -1,12 +1,13 @@
-import * as IP from "./interfaces/IParser";
-import * as IPE from "./interfaces/IParser.extra";
-import type { Server } from "../../../interfaces/IGlobal";
-import { wajikFetch } from "../../../services/dataFetcher";
-import ExtraSamehadakuParser from "./Parser.extra";
+import * as ISP from "./interfaces/ISamehadakuParser";
+import * as ISPE from "./interfaces/ISamehadakuParserExtra";
+import type { Server } from "@interfaces/IGlobal";
+import { wajikFetch } from "@services/dataFetcher";
+import { setResponseError } from "@helpers/error";
+import SamehadakuParserExtra from "./SamehadakuParserExtra";
 
-export default class SamehadakuParser extends ExtraSamehadakuParser {
-  parseHome(): Promise<IP.Home> {
-    return this.scrape<IP.Home>(
+export default class SamehadakuParser extends SamehadakuParserExtra {
+  parseHome(): Promise<ISP.Home> {
+    return this.scrape<ISP.Home>(
       {
         path: "/",
         initialData: {
@@ -17,13 +18,19 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
       },
       async ($, data) => {
         data.recent.href = this.generateHref("recent");
-        data.recent.samehadakuUrl = this.getSourceUrl($(".wp-block-button__link").attr("href"));
+        data.recent.samehadakuUrl = this.generateSourceUrl(
+          $(".wp-block-button__link").attr("href")
+        );
 
         data.batch.href = this.generateHref("batch");
-        data.batch.samehadakuUrl = this.getSourceUrl($(".widget-title h3 .linkwidget").attr("href"));
+        data.batch.samehadakuUrl = this.generateSourceUrl(
+          $(".widget-title h3 .linkwidget").attr("href")
+        );
 
         data.movie.href = this.generateHref("movies");
-        data.movie.samehadakuUrl = this.getSourceUrl($(".widgets h3 .linkwidget").attr("href"));
+        data.movie.samehadakuUrl = this.generateSourceUrl(
+          $(".widgets h3 .linkwidget").attr("href")
+        );
 
         const animeWrapperElements = $(".post-show").toArray();
 
@@ -57,8 +64,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseAllGenres(): Promise<IP.AllGenres> {
-    return this.scrape<IP.AllGenres>(
+  parseAllGenres(): Promise<ISP.AllGenres> {
+    return this.scrape<ISP.AllGenres>(
       {
         path: "/daftar-anime-2",
         initialData: { genreList: [] },
@@ -69,8 +76,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         genreElements.forEach((genreElement) => {
           const oriUrl = `${this.baseUrl}/genre/${$(genreElement).find("input").attr("value")}`;
           const title = $(genreElement).text().trim();
-          const samehadakuUrl = this.getSourceUrl(oriUrl);
-          const genreId = this.getSlugFromUrl(oriUrl);
+          const samehadakuUrl = this.generateSourceUrl(oriUrl);
+          const genreId = this.generateSlug(oriUrl);
           const href = this.generateHref("genres", genreId);
 
           data.genreList.push({
@@ -90,8 +97,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseAllAnimes(): Promise<IP.AllAnimes> {
-    return this.scrape<IP.AllAnimes>(
+  parseAllAnimes(): Promise<ISP.AllAnimes> {
+    return this.scrape<ISP.AllAnimes>(
       {
         path: "/daftar-anime-2/?list",
         initialData: { list: [] },
@@ -100,7 +107,7 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         const listElements = $(".listpst .listbar").toArray();
 
         listElements.forEach((listElement) => {
-          const animeList: IPE.AnimeLinkCard[] = [];
+          const animeList: ISPE.AnimeLinkCard[] = [];
           const startWith = $(listElement).find(".listabj").text();
           const animeElements = $(listElement).find(".listttl ul li a").toArray();
 
@@ -130,8 +137,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseSchedule(): Promise<IP.Schedule> {
-    return this.scrape<IP.Schedule>(
+  parseSchedule(): Promise<ISP.Schedule> {
+    return this.scrape<ISP.Schedule>(
       {
         path: "/jadwal",
         initialData: { days: [] },
@@ -141,7 +148,7 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
 
         dayElements.forEach((dayElement) => {
           const day = $(dayElement).text().trim();
-          const animeList: IPE.AnimeCard4[] = [];
+          const animeList: ISPE.AnimeCard4[] = [];
           const animeElements = $(dayElement).next().find(".animepost").toArray();
 
           animeElements.forEach((animeElement) => {
@@ -165,8 +172,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseRecentEpisodes(page: number): Promise<IP.RecentEpisodes> {
-    return this.scrape<IP.RecentEpisodes>(
+  parseRecentEpisodes(page: number): Promise<ISP.RecentEpisodes> {
+    return this.scrape<ISP.RecentEpisodes>(
       {
         path: `/anime-terbaru/page/${page}`,
         initialData: { data: { episodeList: [] } },
@@ -191,8 +198,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseOngoingAnimes(page: number, order: string): Promise<IP.Animes> {
-    return this.scrape<IP.Animes>(
+  parseOngoingAnimes(page: number, order: string): Promise<ISP.Animes> {
+    return this.scrape<ISP.Animes>(
       {
         path: `/daftar-anime-2/page/${page}/?status=Currently%20Airing&order=${order}`,
         initialData: { data: { animeList: [] } },
@@ -206,8 +213,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseCompletedAnimes(page: number, order: string): Promise<IP.Animes> {
-    return this.scrape<IP.Animes>(
+  parseCompletedAnimes(page: number, order: string): Promise<ISP.Animes> {
+    return this.scrape<ISP.Animes>(
       {
         path: `/daftar-anime-2/page/${page}/?status=Finished%20Airing&order=${order}`,
         initialData: { data: { animeList: [] } },
@@ -221,8 +228,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parsePopularAnimes(page: number): Promise<IP.Animes> {
-    return this.scrape<IP.Animes>(
+  parsePopularAnimes(page: number): Promise<ISP.Animes> {
+    return this.scrape<ISP.Animes>(
       {
         path: `/daftar-anime-2/page/${page}/?order=popular`,
         initialData: { data: { animeList: [] } },
@@ -236,8 +243,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseMovies(page: number): Promise<IP.Animes> {
-    return this.scrape<IP.Animes>(
+  parseMovies(page: number): Promise<ISP.Animes> {
+    return this.scrape<ISP.Animes>(
       {
         path: `/anime-movie/page/${page}`,
         initialData: { data: { animeList: [] } },
@@ -251,8 +258,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseBatches(page: number): Promise<IP.Batches> {
-    return this.scrape<IP.Batches>(
+  parseBatches(page: number): Promise<ISP.Batches> {
+    return this.scrape<ISP.Batches>(
       {
         path: `/daftar-batch/page/${page}`,
         initialData: { data: { batchList: [] } },
@@ -266,8 +273,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseSearch(q: string, page: number): Promise<IP.Animes> {
-    return this.scrape<IP.Animes>(
+  parseSearch(q: string, page: number): Promise<ISP.Animes> {
+    return this.scrape<ISP.Animes>(
       {
         path: `/page/${page}/?s=${q}`,
         initialData: { data: { animeList: [] } },
@@ -281,8 +288,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseGenreAnimes(genreId: string, page: number): Promise<IP.Animes> {
-    return this.scrape<IP.Animes>(
+  parseGenreAnimes(genreId: string, page: number): Promise<ISP.Animes> {
+    return this.scrape<ISP.Animes>(
       {
         path: `/genre/${genreId}/page/${page}`,
         initialData: { data: { animeList: [] } },
@@ -296,8 +303,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseAnimeDetails(animeId: string): Promise<IP.AnimeDetails> {
-    return this.scrape<IP.AnimeDetails>(
+  parseAnimeDetails(animeId: string): Promise<ISP.AnimeDetails> {
+    return this.scrape<ISP.AnimeDetails>(
       {
         path: `/anime/${animeId}`,
         initialData: {
@@ -330,8 +337,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         batchElements.forEach((batchElement) => {
           const oriUrl = $(batchElement).attr("href");
           const title = $(batchElement).text().trim();
-          const samehadakuUrl = this.getSourceUrl(oriUrl);
-          const batchId = this.getSlugFromUrl(oriUrl);
+          const samehadakuUrl = this.generateSourceUrl(oriUrl);
+          const batchId = this.generateSlug(oriUrl);
           const href = this.generateHref("batch", batchId);
 
           data.batchList.push({
@@ -361,7 +368,7 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           const card = this.parseLinkCard($(episodeElement), "episode");
 
           data.episodeList.push({
-            title: Number(card.title.split(" ")[0]) || null,
+            title: this.num(card.title.split(" ")[0]),
             episodeId: card.slug,
             href: card.href,
             samehadakuUrl: card.samehadakuUrl,
@@ -369,13 +376,13 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         });
 
         data.title = $(".infoanime h1.entry-title").text().replace("Nonton Anime", "").trim();
-        data.poster = $(".infoanime .thumb img").attr("src") || "";
+        data.poster = this.str($(".infoanime .thumb img").attr("src"));
         data.score.value = $(".rating-area [itemprop=ratingValue]").text();
         data.score.users = $(".rating-area [itemprop=ratingCount]").text();
-        data.episodes = Number(info.totalEpisode) || null;
+        data.episodes = this.num(info.totalEpisode);
         data.studios = info.studio;
         data.aired = info.released;
-        data.trailer = $(".trailer-anime iframe").attr("src") || "";
+        data.trailer = this.str($(".trailer-anime iframe").attr("src"));
         data.synopsis = this.parseSynopsis($);
 
         delete info["totalEpisode"];
@@ -393,8 +400,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  parseAnimeEpisode(episodeId: string): Promise<IP.AnimeEpisode> {
-    return this.scrape<IP.AnimeEpisode>(
+  parseAnimeEpisode(episodeId: string): Promise<ISP.AnimeEpisode> {
+    return this.scrape<ISP.AnimeEpisode>(
       {
         path: `/${episodeId}`,
         initialData: {
@@ -427,9 +434,9 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
             responseType: "text",
             data: new URLSearchParams({
               action: "player_ajax",
-              post: postData || "",
-              nume: numeData || "",
-              type: typeData || "",
+              post: this.str(postData),
+              nume: this.str(numeData),
+              type: this.str(typeData),
             }),
           });
 
@@ -437,7 +444,7 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         };
 
         data.title = $("h1.entry-title").text();
-        data.poster = $(".thumb img").attr("src") || "";
+        data.poster = this.str($(".thumb img").attr("src"));
         data.releasedOn = $(".time-post").text().trim();
         data.defaultStreamingUrl = await getDefaultStreaming();
         data.downloadUrl = this.parseDownloadUrl($);
@@ -473,9 +480,9 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           serverElements.forEach((serverElement) => {
             if (!$(serverElement).attr("style")?.includes("not-allowed")) {
               const title = $(serverElement).text().trim();
-              const postData = $(serverElement).attr("data-post") || "";
-              const numeData = $(serverElement).attr("data-nume") || "";
-              const typeData = $(serverElement).attr("data-type") || "";
+              const postData = this.str($(serverElement).attr("data-post"));
+              const numeData = this.str($(serverElement).attr("data-nume"));
+              const typeData = this.str($(serverElement).attr("data-type"));
               const serverId = this.enrawr(`${postData}-${numeData}-${typeData}`);
               const href = this.generateHref("server", serverId);
 
@@ -519,7 +526,9 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         data.hasPrevEpisode = data.prevEpisode ? true : false;
         data.hasNextEpisode = data.nextEpisode ? true : false;
         data.movie.href = this.generateHref("movies");
-        data.movie.samehadakuUrl = this.getSourceUrl($(".widgets h3 .linkwidget").attr("href"));
+        data.movie.samehadakuUrl = this.generateSourceUrl(
+          $(".widgets h3 .linkwidget").attr("href")
+        );
 
         const movieElements = $(".widgetseries ul li").toArray();
 
@@ -565,11 +574,11 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
 
         animeElements.forEach((animeElement) => {
           const title = $(animeElement).find(".epsleft .lchx").text();
-          const poster = $(animeElement).find(".epsright img").attr("src") || "";
+          const poster = this.str($(animeElement).find(".epsright img").attr("src"));
           const releaseDate = $(animeElement).find(".epsleft .date").text();
           const oriUrl = $(animeElement).find(".epsright a").attr("href");
-          const samehadakuUrl = this.getSourceUrl(oriUrl);
-          const animeId = this.getSlugFromUrl(oriUrl);
+          const samehadakuUrl = this.generateSourceUrl(oriUrl);
+          const animeId = this.generateSlug(oriUrl);
           const href = this.generateHref("episode", animeId);
 
           data.recommendedEpisodeList.push({
@@ -582,7 +591,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
           });
         });
 
-        const isEmpty = !data.title && data.genreList.length === 0 && data.downloadUrl.formats.length === 0;
+        const isEmpty =
+          !data.title && data.genreList.length === 0 && data.downloadUrl.formats.length === 0;
 
         this.checkEmptyData(isEmpty);
 
@@ -591,12 +601,13 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     );
   }
 
-  async parseServerUrl(serverId: string): Promise<IP.ServerUrl> {
-    const data: IP.ServerUrl = { url: "" };
+  async parseServerUrl(serverId: string): Promise<ISP.ServerUrl> {
+    const data: ISP.ServerUrl = { url: "" };
     const serverIdArr = this.derawr(serverId).split("-");
     const post = serverIdArr[0];
     const nume = serverIdArr[1];
     const type = serverIdArr[2];
+
     const url = await wajikFetch(
       `${this.baseUrl}/wp-admin/admin-ajax.php`,
       {
@@ -610,7 +621,7 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         }),
       },
       (response) => {
-        if (!response.data) throw { status: 400 };
+        if (!response.data) setResponseError(400);
       }
     );
 
@@ -623,8 +634,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
     return data;
   }
 
-  parseAnimeBatch(batchId: string): Promise<IP.AnimeBatch> {
-    return this.scrape<IP.AnimeBatch>(
+  parseAnimeBatch(batchId: string): Promise<ISP.AnimeBatch> {
+    return this.scrape<ISP.AnimeBatch>(
       {
         path: `/batch/${batchId}`,
         initialData: {
@@ -654,11 +665,11 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         const details = this.parseDetails($);
 
         data.title = $(".entry-title").text();
-        data.episodes = Number(details.totalEpisode) || null;
+        data.episodes = this.num(details.totalEpisode);
         data.studios = details.studio;
         data.aired = details.released;
         data.releasedOn = $(".year").text().split("-")[1].trim();
-        data.poster = $(".thumb-batch img").attr("src") || "";
+        data.poster = this.str($(".thumb-batch img").attr("src"));
         data.synopsis = this.parseSynopsis($);
         data.downloadUrl = this.parseDownloadUrl($);
 
@@ -683,11 +694,11 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
         const animeElements = $(".widget-post .animepost").toArray();
 
         animeElements.forEach((animeElement) => {
-          const title = $(animeElement).find("a").attr("title") || "";
-          const poster = $(animeElement).find("img").attr("src") || "";
+          const title = this.str($(animeElement).find("a").attr("title"));
+          const poster = this.str($(animeElement).find("img").attr("src"));
           const oriUrl = $(animeElement).find("a").attr("href");
-          const samehadakuUrl = this.getSourceUrl(oriUrl);
-          const animeId = this.getSlugFromUrl(oriUrl);
+          const samehadakuUrl = this.generateSourceUrl(oriUrl);
+          const animeId = this.generateSlug(oriUrl);
           const href = this.generateHref("anime", animeId);
 
           data.recommendedAnimeList.push({
@@ -701,7 +712,8 @@ export default class SamehadakuParser extends ExtraSamehadakuParser {
 
         data = { ...data, ...details };
 
-        const isEmpty = !data.title && data.downloadUrl.formats.length === 0 && data.genreList.length === 0;
+        const isEmpty =
+          !data.title && data.downloadUrl.formats.length === 0 && data.genreList.length === 0;
 
         this.checkEmptyData(isEmpty);
 

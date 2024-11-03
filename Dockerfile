@@ -24,7 +24,6 @@ WORKDIR /usr/src/app
 
 # Copy the built application from the builder stage
 COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/public ./public
 COPY --from=builder /usr/src/app/package*.json ./
 
 # Install only production dependencies

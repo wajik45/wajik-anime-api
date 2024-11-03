@@ -1,16 +1,16 @@
 import type { AxiosRequestConfig } from "axios";
 import { load, type CheerioAPI } from "cheerio";
-import { wajikFetch } from "../services/dataFetcher";
-import { animeConfig } from "../configs/animeConfig";
+import { wajikFetch } from "@services/dataFetcher";
+import animeConfig from "@configs/animeConfig";
 import path from "path";
 
-export default class Scraper {
+export default class AnimeScraper {
   protected baseUrl: string;
-  protected baseRoute: string;
+  protected baseUrlPath: string;
 
-  constructor(baseUrl: string, baseRoute: string) {
-    this.baseUrl = this.getUrl(baseUrl);
-    this.baseRoute = this.generateRoute(baseRoute);
+  constructor(baseUrl: string, baseUrlPath: string) {
+    this.baseUrl = this.generateBaseUrl(baseUrl);
+    this.baseUrlPath = this.generateUrlPath([baseUrlPath]);
   }
 
   private deepCopy<T>(obj: T): T {
@@ -30,7 +30,7 @@ export default class Scraper {
     return result as T;
   }
 
-  private getUrl(baseUrl: string, urlOrPath?: string): string {
+  private generateBaseUrl(baseUrl: string): string {
     let hapusDariBelakang = true;
 
     while (hapusDariBelakang) {
@@ -41,6 +41,25 @@ export default class Scraper {
       }
     }
 
+    return baseUrl;
+  }
+
+  private generateUrlPath(paths: string[]): string {
+    let urlPath = path.join("/", ...paths).replace(/\\/g, "/");
+    let hapusDariBelakang = true;
+
+    while (hapusDariBelakang) {
+      if (urlPath.endsWith("/")) {
+        urlPath = urlPath.slice(0, -1);
+      } else {
+        hapusDariBelakang = false;
+      }
+    }
+
+    return urlPath;
+  }
+
+  private generateUrl(baseUrl: string, urlOrPath?: string): string {
     if (urlOrPath) {
       if (urlOrPath.includes(baseUrl)) {
         baseUrl = baseUrl + urlOrPath.replace(baseUrl, "");
@@ -56,31 +75,33 @@ export default class Scraper {
     return baseUrl;
   }
 
-  private generateRoute(...args: string[]): string {
-    const route = path.join("/", ...args, "/").replace(/\\/g, "/");
-
-    return route.endsWith("/") ? route.slice(0, -1) : route;
+  protected str(string?: string): string {
+    return string?.trim() || "";
   }
 
-  protected getSourceUrl(urlOrPath?: string): string | undefined {
+  protected num(string?: string): number | null {
+    return Number(string?.trim()) || null;
+  }
+
+  protected generateSlug(url?: string): string {
+    if (typeof url !== "string") return "";
+
+    const urlArr = url.split("/").filter((url) => url !== "");
+
+    return urlArr[urlArr.length - 1]?.trim() || "";
+  }
+
+  protected generateSourceUrl(urlOrPath?: string): string | undefined {
     if (animeConfig.response.sourceUrl) {
-      return this.getUrl(this.baseUrl, urlOrPath);
+      return this.generateUrl(this.baseUrl, urlOrPath);
     }
 
     return undefined;
   }
 
-  protected getSlugFromUrl(url?: string): string {
-    if (typeof url !== "string") return "";
-
-    const urlArr = url.split("/").filter((url) => url !== "");
-
-    return urlArr[urlArr.length - 1] || "";
-  }
-
-  protected generateHref(...args: string[]): string | undefined {
+  protected generateHref(...paths: string[]): string | undefined {
     if (animeConfig.response.href) {
-      return this.generateRoute(this.baseRoute, ...args);
+      return this.generateUrlPath([this.baseUrlPath, ...paths]);
     }
 
     return undefined;
@@ -162,54 +183,12 @@ export default class Scraper {
     },
     parser: ($: CheerioAPI, data: T) => Promise<T>
   ): Promise<T> {
-    const path = this.generateRoute(props.path);
-    const htmlData = await wajikFetch(
-      this.baseUrl + path,
-      {
-        method: "GET",
-        responseType: "text",
-        ...props.axiosConfig,
-      },
-      (response) => {
-        // ALL SOURCES
-        const $ = load(response.data);
-        const resUrl = response.request.res.responseUrl;
-        const originHostname = new URL(this.baseUrl + path).hostname;
-        const redirectHostname = new URL(resUrl).hostname;
-
-        this.checkEmptyData(originHostname !== redirectHostname);
-
-        if (resUrl.includes("samehadaku")) {
-          // SAMEHADAKU
-          if (resUrl.includes("/page")) {
-            if (resUrl.includes("anime-terbaru")) {
-              const animeElement = $("main#main .post-show ul li");
-
-              this.checkEmptyData(animeElement.length === 0);
-            } else if (resUrl.includes("?s=")) {
-              const notFoundElement = $("#main > h3.notfound");
-
-              this.checkEmptyData(notFoundElement.length === 1);
-            } else {
-              const animeElement = $("main#main .relat .animpost");
-
-              this.checkEmptyData(animeElement.length === 0);
-            }
-          }
-        } else if (resUrl.includes("otakudesu")) {
-          // OTAKUDESU
-          if (resUrl.includes("/page")) {
-            const animeElement = $(".venz > ul > strong");
-
-            this.checkEmptyData(animeElement.text() === "Not Found");
-          } else if (resUrl.includes("?s=")) {
-            const animeElement = $(".chivsrc li");
-
-            this.checkEmptyData(animeElement.length === 0);
-          }
-        }
-      }
-    );
+    const path = this.generateUrlPath([props.path]);
+    const htmlData = await wajikFetch(this.baseUrl + path, {
+      method: "GET",
+      responseType: "text",
+      ...props.axiosConfig,
+    });
     const $ = load(htmlData);
     const data = parser($, this.deepCopy(props.initialData));
 

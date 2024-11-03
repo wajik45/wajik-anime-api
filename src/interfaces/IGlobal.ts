@@ -42,7 +42,7 @@ export interface RouteParam {
 export interface AnimeSource {
   title: string;
   baseUrl: string;
-  baseRoute: string;
+  baseUrlPath: string;
   message: string;
   ok: boolean;
   routesView: {
