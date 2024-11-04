@@ -1,4 +1,3 @@
-import "./libs/moduleAlias";
 import { clientCache } from "@middlewares/cache";
 import { otakudesuInfo, otakudesuRoute } from "@otakudesu/index";
 import { samehadakuInfo, samehadakuRoute } from "@samehadaku/index";
