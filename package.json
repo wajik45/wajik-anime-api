@@ -9,7 +9,7 @@
     "start": "node dist/index.js"
   },
   "engines": {
-    "node": "^20"
+    "node": "20 || >=22"
   },
   "keywords": [],
   "author": "wajik45",
