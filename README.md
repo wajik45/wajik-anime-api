@@ -12,7 +12,7 @@ MOHON IZIN ABANG SUMBER, sumber bisa bertambah, req/dm rekomendasi situs yang ba
 
 - domain sering berubah jangan lupa pantau terus untuk edit url ada di di "src/configs/animeConfig.ts"
 
-# Installasi
+# Installasi App
 
 - NodeJS >= 20.x
 - Jalankan perintah di terminal
@@ -21,20 +21,24 @@ MOHON IZIN ABANG SUMBER, sumber bisa bertambah, req/dm rekomendasi situs yang ba
 # clone repo
 git clone https://github.com/wajik45/wajik-anime-api.git
 
-# masuk folder
+# masuk repo
 cd wajik-anime-api
 
 # install dependensi
 npm install
 
+# menjalankan server mode development
+npm run dev
+```
+
+# Build App
+
+```sh
 # build
 npm run build
 
 # menjalankan server
 npm start
-
-# development
-npm run dev
 ```
 
 - Server akan berjalan di http://localhost:3001
@@ -93,4 +97,5 @@ npm run dev
 
 ### CONTOH UI
 
-Nyusul kalo sempet..
+[wajiknime](https://github.com/wajik45/wajiknime/)
+[zannime](https://github.com/Fauzanmhr/zannime/)

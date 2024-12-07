@@ -44,7 +44,9 @@ export interface RecentEpisodes {
 }
 
 export interface Animes {
-  data: ISPE.AnimeCard2List;
+  data: {
+    animeList: ISPE.AnimeCard2[];
+  };
   pagination?: Pagination;
 }
 
@@ -78,6 +80,7 @@ export interface AnimeDetails {
 
 export interface AnimeEpisode {
   title: string;
+  animeId: string;
   poster: string;
   releasedOn: string;
   defaultStreamingUrl: string;
@@ -103,6 +106,7 @@ export interface ServerUrl {
 
 export interface AnimeBatch {
   title: string;
+  animeId: string;
   japanese: string;
   synonyms: string;
   english: string;

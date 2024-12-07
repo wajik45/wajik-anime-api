@@ -164,7 +164,8 @@ const samehadakuController = {
     async getAnimeEpisode(req, res, next) {
         try {
             const { episodeId } = req.params;
-            const data = await parser.parseAnimeEpisode(episodeId);
+            const originUrl = `${req.headers["x-forwarded-proto"] || req.protocol}://${req.get("host")}`;
+            const data = await parser.parseAnimeEpisode(episodeId, originUrl);
             res.json((0, payload_1.default)(res, { data }));
         }
         catch (error) {
@@ -174,7 +175,8 @@ const samehadakuController = {
     async getServerUrl(req, res, next) {
         try {
             const { serverId } = req.params;
-            const data = await parser.parseServerUrl(serverId);
+            const originUrl = `${req.headers["x-forwarded-proto"] || req.protocol}://${req.get("host")}`;
+            const data = await parser.parseServerUrl(serverId, originUrl);
             res.json((0, payload_1.default)(res, { data }));
         }
         catch (error) {
@@ -186,6 +188,16 @@ const samehadakuController = {
             const { batchId } = req.params;
             const data = await parser.parseAnimeBatch(batchId);
             res.json((0, payload_1.default)(res, { data }));
+        }
+        catch (error) {
+            next(error);
+        }
+    },
+    async getWibuFile(req, res, next) {
+        try {
+            const url = (0, queryParams_1.getUrlParam)(req);
+            const wibuFile = await parser.parseWibuFile(url);
+            res.send(wibuFile);
         }
         catch (error) {
             next(error);

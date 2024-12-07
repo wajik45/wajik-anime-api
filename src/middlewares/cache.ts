@@ -8,7 +8,7 @@ import path from "path";
  */
 export function serverCache(ttl?: number) {
   return (req: Request, res: Response, next: NextFunction) => {
-    ttl = ttl ? 1000 * 60 * ttl : defaultTTL;
+    const newTTL = ttl ? 1000 * 60 * ttl : defaultTTL;
 
     const key = path.join(req.originalUrl, "/").replace(/\\/g, "/");
     const cachedData = cache.get(key);
@@ -25,7 +25,7 @@ export function serverCache(ttl?: number) {
 
     res.json = (body: Payload) => {
       if (res.statusCode < 399 && body.ok) {
-        cache.set(key, body, { ttl });
+        cache.set(key, body, { ttl: newTTL });
       }
 
       return originalJson(body);

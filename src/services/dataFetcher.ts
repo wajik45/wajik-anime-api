@@ -8,13 +8,12 @@ export async function wajikFetch(
   axiosConfig?: AxiosRequestConfig<any>,
   callback?: (response: AxiosResponse) => void
 ): Promise<any> {
-  const response = await axios({
-    url,
-    headers: {
-      ...axiosConfig?.headers,
-      "User-Agent": userAgent,
-    },
+  const response = await axios(url, {
     ...axiosConfig,
+    headers: {
+      "User-Agent": userAgent,
+      ...axiosConfig?.headers,
+    },
   });
 
   if (callback) callback(response);
@@ -31,8 +30,8 @@ export async function getFinalUrl(
   const response = await axios.head(url, {
     ...axiosConfig,
     headers: {
-      ...axiosConfig?.headers,
       "User-Agent": userAgent,
+      ...axiosConfig?.headers,
     },
     maxRedirects: 0,
     validateStatus: function (status) {

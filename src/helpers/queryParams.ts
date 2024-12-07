@@ -49,3 +49,15 @@ export function getQParam(req: Request): string {
 
   return "";
 }
+
+export function getUrlParam(req: Request): string {
+  const url = req.query.url;
+
+  if (!url) {
+    setResponseError(400, setErrorMessage("url", ["string"]));
+  }
+
+  if (typeof url === "string") return url;
+
+  return "";
+}

@@ -7,6 +7,7 @@ const cheerio_1 = require("cheerio");
 const dataFetcher_1 = require("../services/dataFetcher");
 const animeConfig_1 = __importDefault(require("../configs/animeConfig"));
 const path_1 = __importDefault(require("path"));
+const error_1 = require("../helpers/error");
 class AnimeScraper {
     constructor(baseUrl, baseUrlPath) {
         this.baseUrl = this.generateBaseUrl(baseUrl);
@@ -89,7 +90,7 @@ class AnimeScraper {
         return undefined;
     }
     generateSrcFromIframeTag(html) {
-        const iframeMatch = html?.match(/<iframe[^>]+src="([^"]+)"/);
+        const iframeMatch = html?.match(/<iframe[^>]+src="([^"]+)"/i);
         const src = iframeMatch ? iframeMatch[1] : "No iframe found";
         return src;
     }
@@ -110,7 +111,7 @@ class AnimeScraper {
     }
     checkEmptyData(errorCondition) {
         if (errorCondition)
-            throw { status: 404, message: "data tidak ditemukan" };
+            (0, error_1.setResponseError)(404, "data tidak ditemukan");
     }
     enrawr(input) {
         let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

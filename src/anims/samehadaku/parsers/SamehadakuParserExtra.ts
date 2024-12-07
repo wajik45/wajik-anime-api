@@ -1,4 +1,5 @@
 import * as ISPE from "./interfaces/ISamehadakuParserExtra";
+import * as ISP from "./interfaces/ISamehadakuParser";
 import type { Cheerio, CheerioAPI, Element } from "cheerio";
 import type { Pagination } from "@helpers/payload";
 import type { Format, Quality, Url } from "@interfaces/IGlobal";
@@ -174,8 +175,8 @@ export default class SamehadakuParserExtra extends AnimeScraper {
     return data;
   }
 
-  protected parseAnimeCard2List($: CheerioAPI, to: "anime" | "batch"): ISPE.AnimeCard2List {
-    const data: ISPE.AnimeCard2List = { animeList: [] };
+  protected parseAnimeCard2List($: CheerioAPI, to: "anime" | "batch"): ISP.Animes["data"] {
+    const data: ISP.Animes["data"] = { animeList: [] };
     const animeElements = $(".animpost .animepost").toArray();
 
     animeElements.forEach((animeElement) => {

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrderParam = getOrderParam;
 exports.getPageParam = getPageParam;
 exports.getQParam = getQParam;
+exports.getUrlParam = getUrlParam;
 const error_1 = require("./error");
 function setErrorMessage(key, validValue) {
     return `masukkan query parameter: ?${key}=${validValue.join("|")}`;
@@ -42,5 +43,14 @@ function getQParam(req) {
     }
     if (typeof q === "string")
         return q;
+    return "";
+}
+function getUrlParam(req) {
+    const url = req.query.url;
+    if (!url) {
+        (0, error_1.setResponseError)(400, setErrorMessage("url", ["string"]));
+    }
+    if (typeof url === "string")
+        return url;
     return "";
 }

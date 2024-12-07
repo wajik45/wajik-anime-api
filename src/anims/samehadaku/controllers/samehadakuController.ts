@@ -1,9 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
-import { getOrderParam, getPageParam, getQParam } from "@helpers/queryParams";
+import { getOrderParam, getPageParam, getQParam, getUrlParam } from "@helpers/queryParams";
 import SamehadakuParser from "@samehadaku/parsers/SamehadakuParser";
 import samehadakuInfo from "@samehadaku/info/samehadakuInfo";
 import generatePayload from "@helpers/payload";
 import path from "path";
+import { setResponseError } from "@helpers/error";
 
 const { baseUrl, baseUrlPath } = samehadakuInfo;
 const parser = new SamehadakuParser(baseUrl, baseUrlPath);
@@ -177,7 +178,8 @@ const samehadakuController = {
   async getAnimeEpisode(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { episodeId } = req.params;
-      const data = await parser.parseAnimeEpisode(episodeId);
+      const originUrl = `${req.headers["x-forwarded-proto"] || req.protocol}://${req.get("host")}`;
+      const data = await parser.parseAnimeEpisode(episodeId, originUrl);
 
       res.json(generatePayload(res, { data }));
     } catch (error) {
@@ -188,7 +190,8 @@ const samehadakuController = {
   async getServerUrl(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { serverId } = req.params;
-      const data = await parser.parseServerUrl(serverId);
+      const originUrl = `${req.headers["x-forwarded-proto"] || req.protocol}://${req.get("host")}`;
+      const data = await parser.parseServerUrl(serverId, originUrl);
 
       res.json(generatePayload(res, { data }));
     } catch (error) {
@@ -202,6 +205,17 @@ const samehadakuController = {
       const data = await parser.parseAnimeBatch(batchId);
 
       res.json(generatePayload(res, { data }));
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getWibuFile(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const url = getUrlParam(req);
+      const wibuFile = await parser.parseWibuFile(url);
+
+      res.send(wibuFile);
     } catch (error) {
       next(error);
     }

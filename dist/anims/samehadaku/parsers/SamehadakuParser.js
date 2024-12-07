@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dataFetcher_1 = require("../../../services/dataFetcher");
 const error_1 = require("../../../helpers/error");
 const SamehadakuParserExtra_1 = __importDefault(require("./SamehadakuParserExtra"));
+const samehadakuInfo_1 = __importDefault(require("../info/samehadakuInfo"));
 class SamehadakuParser extends SamehadakuParserExtra_1.default {
     parseHome() {
         return this.scrape({
@@ -284,11 +285,12 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
             return data;
         });
     }
-    parseAnimeEpisode(episodeId) {
+    parseAnimeEpisode(episodeId, originUrl) {
         return this.scrape({
             path: `/${episodeId}`,
             initialData: {
                 title: "",
+                animeId: "",
                 poster: "",
                 releasedOn: "",
                 defaultStreamingUrl: "",
@@ -322,10 +324,15 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
                 return this.generateSrcFromIframeTag(result);
             };
             data.title = $("h1.entry-title").text();
+            data.animeId = this.generateSlug($(".naveps .nvs.nvsc a").attr("href"));
             data.poster = this.str($(".thumb img").attr("src"));
             data.releasedOn = $(".time-post").text().trim();
             data.defaultStreamingUrl = await getDefaultStreaming();
             data.downloadUrl = this.parseDownloadUrl($);
+            if (data.defaultStreamingUrl.includes("api.wibufile.com")) {
+                data.defaultStreamingUrl =
+                    originUrl + this.generateHref("/", `wibufile?url=${data.defaultStreamingUrl}`);
+            }
             const serverElements = $(".server_option ul li .east_player_option").toArray();
             const serverQualities = [
                 { title: "unknown", serverList: [] },
@@ -444,7 +451,7 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
             return data;
         });
     }
-    async parseServerUrl(serverId) {
+    async parseServerUrl(serverId, originUrl) {
         const data = { url: "" };
         const serverIdArr = this.derawr(serverId).split("-");
         const post = serverIdArr[0];
@@ -464,15 +471,26 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
                 (0, error_1.setResponseError)(400);
         });
         data.url = this.generateSrcFromIframeTag(url);
+        if (data.url.includes("api.wibufile.com")) {
+            data.url = originUrl + this.generateHref("/", `wibufile?url=${data.url}`);
+        }
         const isEmpty = !data.url || data.url === "No iframe found";
         this.checkEmptyData(isEmpty);
         return data;
+    }
+    parseWibuFile(url) {
+        return (0, dataFetcher_1.wajikFetch)(url, {
+            headers: {
+                Referer: samehadakuInfo_1.default.baseUrl,
+            },
+        });
     }
     parseAnimeBatch(batchId) {
         return this.scrape({
             path: `/batch/${batchId}`,
             initialData: {
                 title: "",
+                animeId: "",
                 poster: "",
                 japanese: "",
                 synonyms: "",
@@ -496,6 +514,7 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
         }, async ($, data) => {
             const details = this.parseDetails($);
             data.title = $(".entry-title").text();
+            data.animeId = this.generateSlug($($("#breadcrumbs li a").toArray()[2]).attr("href"));
             data.episodes = this.num(details.totalEpisode);
             data.studios = details.studio;
             data.aired = details.released;

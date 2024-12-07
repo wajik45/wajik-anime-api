@@ -277,6 +277,7 @@ class OtakudesuParser extends OtakudesuParserExtra_1.default {
             path: `/episode/${episodeId}`,
             initialData: {
                 title: "",
+                animeId: "",
                 releaseTime: "",
                 defaultStreamingUrl: "",
                 hasPrevEpisode: false,
@@ -297,11 +298,18 @@ class OtakudesuParser extends OtakudesuParserExtra_1.default {
         }, async ($, data) => {
             const { info, genreList } = this.parseDetails($, $(".infozingle p"));
             data.title = $(".posttl").text();
+            data.animeId = this.generateSlug($($(".prevnext .flir a")
+                .toArray()
+                .filter((item) => {
+                if ($(item).text() === "See All Episodes") {
+                    return item;
+                }
+            })[0]).attr("href"));
             data.releaseTime = $(".kategoz .fa.fa-clock-o").next().text();
             data.defaultStreamingUrl = this.str($(".responsive-embed-stream iframe").attr("src"));
             data.info.genreList = genreList;
-            data.info.type = info.tIOPE;
-            delete info["tIOPE"];
+            data.info.type = info.tipe;
+            delete info["tipe"];
             const serverElements = $(".mirrorstream ul").toArray();
             const nonceCacheKey = "otakudesuNonce";
             if (!lruCache_1.cache.get(nonceCacheKey)) {
@@ -465,6 +473,7 @@ class OtakudesuParser extends OtakudesuParserExtra_1.default {
             path: `/batch/${batchId}`,
             initialData: {
                 title: "",
+                animeId: "",
                 poster: "",
                 japanese: "",
                 type: "",
@@ -535,6 +544,7 @@ class OtakudesuParser extends OtakudesuParserExtra_1.default {
                 });
             });
             data.title = info.judul;
+            data.animeId = this.generateSlug($(".totalepisode h3 a").attr("href"));
             data.score = info.rating;
             data.episodes = this.num(info.episodes);
             delete info["judul"];

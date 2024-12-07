@@ -9,13 +9,12 @@ exports.getFinalUrls = getFinalUrls;
 const axios_1 = __importDefault(require("axios"));
 const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
 async function wajikFetch(url, axiosConfig, callback) {
-    const response = await (0, axios_1.default)({
-        url,
-        headers: {
-            ...axiosConfig?.headers,
-            "User-Agent": userAgent,
-        },
+    const response = await (0, axios_1.default)(url, {
         ...axiosConfig,
+        headers: {
+            "User-Agent": userAgent,
+            ...axiosConfig?.headers,
+        },
     });
     if (callback)
         callback(response);
@@ -26,8 +25,8 @@ async function getFinalUrl(url, axiosConfig) {
     const response = await axios_1.default.head(url, {
         ...axiosConfig,
         headers: {
-            ...axiosConfig?.headers,
             "User-Agent": userAgent,
+            ...axiosConfig?.headers,
         },
         maxRedirects: 0,
         validateStatus: function (status) {

@@ -10,7 +10,7 @@ const lruCache_1 = require("../libs/lruCache");
 const path_1 = __importDefault(require("path"));
 function serverCache(ttl) {
     return (req, res, next) => {
-        ttl = ttl ? 1000 * 60 * ttl : lruCache_1.defaultTTL;
+        const newTTL = ttl ? 1000 * 60 * ttl : lruCache_1.defaultTTL;
         const key = path_1.default.join(req.originalUrl, "/").replace(/\\/g, "/");
         const cachedData = lruCache_1.cache.get(key);
         if (cachedData) {
@@ -19,7 +19,7 @@ function serverCache(ttl) {
         const originalJson = res.json.bind(res);
         res.json = (body) => {
             if (res.statusCode < 399 && body.ok) {
-                lruCache_1.cache.set(key, body, { ttl });
+                lruCache_1.cache.set(key, body, { ttl: newTTL });
             }
             return originalJson(body);
         };

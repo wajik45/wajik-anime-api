@@ -3,6 +3,7 @@ import { load, type CheerioAPI } from "cheerio";
 import { wajikFetch } from "@services/dataFetcher";
 import animeConfig from "@configs/animeConfig";
 import path from "path";
+import { setResponseError } from "@helpers/error";
 
 export default class AnimeScraper {
   protected baseUrl: string;
@@ -108,7 +109,7 @@ export default class AnimeScraper {
   }
 
   protected generateSrcFromIframeTag(html?: string): string {
-    const iframeMatch = html?.match(/<iframe[^>]+src="([^"]+)"/);
+    const iframeMatch = html?.match(/<iframe[^>]+src="([^"]+)"/i);
     const src = iframeMatch ? iframeMatch[1] : "No iframe found";
 
     return src;
@@ -131,7 +132,7 @@ export default class AnimeScraper {
   }
 
   protected checkEmptyData(errorCondition: boolean): void {
-    if (errorCondition) throw { status: 404, message: "data tidak ditemukan" };
+    if (errorCondition) setResponseError(404, "data tidak ditemukan");
   }
 
   protected enrawr(input: string): string {

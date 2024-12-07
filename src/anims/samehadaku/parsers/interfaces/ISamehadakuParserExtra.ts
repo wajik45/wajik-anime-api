@@ -61,10 +61,6 @@ export interface AnimeCard6 {
   samehadakuUrl?: string;
 }
 
-export interface AnimeCard2List {
-  animeList: AnimeCard2[];
-}
-
 export interface LinkCard {
   title: string;
   slug: string;

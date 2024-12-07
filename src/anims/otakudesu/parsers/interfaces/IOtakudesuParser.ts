@@ -74,6 +74,7 @@ export interface AnimeDetails {
 
 export interface AnimeEpisode {
   title: string;
+  animeId: string;
   releaseTime: string;
   defaultStreamingUrl: string;
   hasPrevEpisode: boolean;
@@ -98,6 +99,7 @@ export interface ServerUrl {
 
 export interface AnimeBatch {
   title: string;
+  animeId: string;
   poster: string;
   japanese: string;
   type: string;

@@ -4,6 +4,8 @@ import type { Server } from "@interfaces/IGlobal";
 import { wajikFetch } from "@services/dataFetcher";
 import { setResponseError } from "@helpers/error";
 import SamehadakuParserExtra from "./SamehadakuParserExtra";
+import samehadakuInfo from "@samehadaku/info/samehadakuInfo";
+import path from "path";
 
 export default class SamehadakuParser extends SamehadakuParserExtra {
   parseHome(): Promise<ISP.Home> {
@@ -400,12 +402,13 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
     );
   }
 
-  parseAnimeEpisode(episodeId: string): Promise<ISP.AnimeEpisode> {
+  parseAnimeEpisode(episodeId: string, originUrl: string): Promise<ISP.AnimeEpisode> {
     return this.scrape<ISP.AnimeEpisode>(
       {
         path: `/${episodeId}`,
         initialData: {
           title: "",
+          animeId: "",
           poster: "",
           releasedOn: "",
           defaultStreamingUrl: "",
@@ -444,10 +447,16 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
         };
 
         data.title = $("h1.entry-title").text();
+        data.animeId = this.generateSlug($(".naveps .nvs.nvsc a").attr("href"));
         data.poster = this.str($(".thumb img").attr("src"));
         data.releasedOn = $(".time-post").text().trim();
         data.defaultStreamingUrl = await getDefaultStreaming();
         data.downloadUrl = this.parseDownloadUrl($);
+
+        if (data.defaultStreamingUrl.includes("api.wibufile.com")) {
+          data.defaultStreamingUrl =
+            originUrl + this.generateHref("/", `wibufile?url=${data.defaultStreamingUrl}`);
+        }
 
         const serverElements = $(".server_option ul li .east_player_option").toArray();
 
@@ -601,7 +610,7 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
     );
   }
 
-  async parseServerUrl(serverId: string): Promise<ISP.ServerUrl> {
+  async parseServerUrl(serverId: string, originUrl: string): Promise<ISP.ServerUrl> {
     const data: ISP.ServerUrl = { url: "" };
     const serverIdArr = this.derawr(serverId).split("-");
     const post = serverIdArr[0];
@@ -627,11 +636,23 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
 
     data.url = this.generateSrcFromIframeTag(url);
 
+    if (data.url.includes("api.wibufile.com")) {
+      data.url = originUrl + this.generateHref("/", `wibufile?url=${data.url}`);
+    }
+
     const isEmpty = !data.url || data.url === "No iframe found";
 
     this.checkEmptyData(isEmpty);
 
     return data;
+  }
+
+  parseWibuFile(url: string): Promise<any> {
+    return wajikFetch(url, {
+      headers: {
+        Referer: samehadakuInfo.baseUrl,
+      },
+    });
   }
 
   parseAnimeBatch(batchId: string): Promise<ISP.AnimeBatch> {
@@ -640,6 +661,7 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
         path: `/batch/${batchId}`,
         initialData: {
           title: "",
+          animeId: "",
           poster: "",
           japanese: "",
           synonyms: "",
@@ -665,6 +687,7 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
         const details = this.parseDetails($);
 
         data.title = $(".entry-title").text();
+        data.animeId = this.generateSlug($($("#breadcrumbs li a").toArray()[2]).attr("href"));
         data.episodes = this.num(details.totalEpisode);
         data.studios = details.studio;
         data.aired = details.released;
