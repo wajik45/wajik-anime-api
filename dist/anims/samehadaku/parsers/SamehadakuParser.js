@@ -7,6 +7,7 @@ const dataFetcher_1 = require("../../../services/dataFetcher");
 const error_1 = require("../../../helpers/error");
 const SamehadakuParserExtra_1 = __importDefault(require("./SamehadakuParserExtra"));
 const samehadakuInfo_1 = __importDefault(require("../info/samehadakuInfo"));
+const path_1 = __importDefault(require("path"));
 class SamehadakuParser extends SamehadakuParserExtra_1.default {
     parseHome() {
         return this.scrape({
@@ -472,7 +473,7 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
         });
         data.url = this.generateSrcFromIframeTag(url);
         if (data.url.includes("api.wibufile.com")) {
-            data.url = originUrl + this.generateHref("/", `wibufile?url=${data.url}`);
+            data.url = originUrl + path_1.default.join("/", this.baseUrlPath, `wibufile?url=${data.url}`).replace(/\\/g, "/");
         }
         const isEmpty = !data.url || data.url === "No iframe found";
         this.checkEmptyData(isEmpty);
