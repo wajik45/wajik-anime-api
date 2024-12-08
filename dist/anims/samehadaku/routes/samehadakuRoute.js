@@ -24,7 +24,7 @@ samehadakuRoute
     .get("/genres/:genreId", (0, cache_1.serverCache)(10), samehadakuController_1.default.getGenreAnimes)
     .get("/anime/:animeId", (0, cache_1.serverCache)(30), samehadakuController_1.default.getAnimeDetails)
     .get("/episode/:episodeId", (0, cache_1.serverCache)(30), samehadakuController_1.default.getAnimeEpisode)
-    .get("/server/:serverId", (0, cache_1.serverCache)(1), samehadakuController_1.default.getServerUrl)
+    .get("/server/:serverId", (0, cache_1.serverCache)(3), samehadakuController_1.default.getServerUrl)
     .post("/server/:serverId", (0, cache_1.serverCache)(3), samehadakuController_1.default.getServerUrl)
     .get("/wibufile", (0, cache_1.serverCache)(3), samehadakuController_1.default.getWibuFile)
     .get("/batch/:batchId", (0, cache_1.serverCache)(30), samehadakuController_1.default.getAnimeBatch);

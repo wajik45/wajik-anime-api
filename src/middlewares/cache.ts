@@ -16,6 +16,10 @@ export function serverCache(ttl?: number) {
     if (cachedData) {
       // console.log("hit");
 
+      if (typeof cachedData === "string") {
+        return res.send(cachedData);
+      }
+
       return res.json(generatePayload(res, cachedData));
     }
 
@@ -29,6 +33,16 @@ export function serverCache(ttl?: number) {
       }
 
       return originalJson(body);
+    };
+
+    const originalBody = res.send.bind(res);
+
+    res.send = (body: any) => {
+      if (res.statusCode < 399) {
+        cache.set(key, body, { ttl: newTTL });
+      }
+
+      return originalBody(body);
     };
 
     next();

@@ -4,7 +4,6 @@ import SamehadakuParser from "@samehadaku/parsers/SamehadakuParser";
 import samehadakuInfo from "@samehadaku/info/samehadakuInfo";
 import generatePayload from "@helpers/payload";
 import path from "path";
-import { setResponseError } from "@helpers/error";
 
 const { baseUrl, baseUrlPath } = samehadakuInfo;
 const parser = new SamehadakuParser(baseUrl, baseUrlPath);

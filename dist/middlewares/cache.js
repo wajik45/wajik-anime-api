@@ -14,6 +14,9 @@ function serverCache(ttl) {
         const key = path_1.default.join(req.originalUrl, "/").replace(/\\/g, "/");
         const cachedData = lruCache_1.cache.get(key);
         if (cachedData) {
+            if (typeof cachedData === "string") {
+                return res.send(cachedData);
+            }
             return res.json((0, payload_1.default)(res, cachedData));
         }
         const originalJson = res.json.bind(res);
@@ -22,6 +25,13 @@ function serverCache(ttl) {
                 lruCache_1.cache.set(key, body, { ttl: newTTL });
             }
             return originalJson(body);
+        };
+        const originalBody = res.send.bind(res);
+        res.send = (body) => {
+            if (res.statusCode < 399) {
+                lruCache_1.cache.set(key, body, { ttl: newTTL });
+            }
+            return originalBody(body);
         };
         next();
     };

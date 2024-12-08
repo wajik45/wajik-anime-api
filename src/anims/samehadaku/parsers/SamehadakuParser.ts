@@ -5,7 +5,6 @@ import { wajikFetch } from "@services/dataFetcher";
 import { setResponseError } from "@helpers/error";
 import SamehadakuParserExtra from "./SamehadakuParserExtra";
 import samehadakuInfo from "@samehadaku/info/samehadakuInfo";
-import path from "path";
 
 export default class SamehadakuParser extends SamehadakuParserExtra {
   parseHome(): Promise<ISP.Home> {
