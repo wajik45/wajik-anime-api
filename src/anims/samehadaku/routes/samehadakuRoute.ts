@@ -23,7 +23,7 @@ samehadakuRoute
   .get("/episode/:episodeId", serverCache(30), controller.getAnimeEpisode)
   .get("/server/:serverId", serverCache(3), controller.getServerUrl)
   .post("/server/:serverId", serverCache(3), controller.getServerUrl)
-  .get("/wibufile", serverCache(3), controller.getWibuFile)
+  .get("/wibufile", serverCache(3, "text"), controller.getWibuFile)
   .get("/batch/:batchId", serverCache(30), controller.getAnimeBatch);
 
 export default samehadakuRoute;

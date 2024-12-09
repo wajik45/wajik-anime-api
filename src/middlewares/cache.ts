@@ -1,49 +1,60 @@
 import type { Request, Response, NextFunction } from "express";
-import generatePayload, { type Payload } from "@helpers/payload";
+import { type Payload } from "@helpers/payload";
 import { defaultTTL, cache } from "@libs/lruCache";
 import path from "path";
 
 /**
  * @param ttl minutes
  */
-export function serverCache(ttl?: number) {
+export function serverCache(ttl?: number, responseType: "json" | "text" = "json") {
   return (req: Request, res: Response, next: NextFunction) => {
     const newTTL = ttl ? 1000 * 60 * ttl : defaultTTL;
-
     const key = path.join(req.originalUrl, "/").replace(/\\/g, "/");
     const cachedData = cache.get(key);
 
     if (cachedData) {
       // console.log("hit");
 
+      if (typeof cachedData === "object") {
+        // console.log("ini object");
+
+        return res.json(cachedData);
+      }
+
       if (typeof cachedData === "string") {
+        // console.log("ini string");
+
         return res.send(cachedData);
       }
 
-      return res.json(generatePayload(res, cachedData));
+      // console.log("ini bukan object / string");
+
+      return res.send(String(cachedData));
     }
 
     // console.log("miss");
 
-    const originalJson = res.json.bind(res);
+    if (responseType === "json") {
+      const originalJson = res.json.bind(res);
 
-    res.json = (body: Payload) => {
-      if (res.statusCode < 399 && body.ok) {
-        cache.set(key, body, { ttl: newTTL });
-      }
+      res.json = (body: Payload) => {
+        if (res.statusCode < 399 && body.ok) {
+          cache.set(key, body, { ttl: newTTL });
+        }
 
-      return originalJson(body);
-    };
+        return originalJson(body);
+      };
+    } else {
+      const originalSend = res.send.bind(res);
 
-    const originalBody = res.send.bind(res);
+      res.send = (body: any) => {
+        if (res.statusCode < 399) {
+          cache.set(key, body, { ttl: newTTL });
+        }
 
-    res.send = (body: any) => {
-      if (res.statusCode < 399) {
-        cache.set(key, body, { ttl: newTTL });
-      }
-
-      return originalBody(body);
-    };
+        return originalSend(body);
+      };
+    }
 
     next();
   };
