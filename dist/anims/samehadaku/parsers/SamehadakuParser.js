@@ -35,7 +35,9 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
             const animeMovieElements = $(".widgetseries ul li").toArray();
             animeMovieElements.forEach((animeMovieElement) => {
                 const card = this.parseAnimeCard3($, $(animeMovieElement));
-                data.movie.animeList.push(card);
+                if (card.title && card.animeId && Array.isArray(card.genreList)) {
+                    data.movie.animeList.push(card);
+                }
             });
             const isEmpty = data.recent.episodeList.length === 0 &&
                 data.batch.batchList.length === 0 &&
