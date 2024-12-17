@@ -51,7 +51,9 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
         animeMovieElements.forEach((animeMovieElement) => {
           const card = this.parseAnimeCard3($, $(animeMovieElement));
 
-          data.movie.animeList.push(card);
+          if (card.title && card.animeId && Array.isArray(card.genreList)) {
+            data.movie.animeList.push(card);
+          }
         });
 
         const isEmpty =
