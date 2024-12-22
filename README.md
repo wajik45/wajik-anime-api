@@ -8,7 +8,7 @@ API ini unofficial jadi kaga ada kaitan dengan sumber yang tersedia...
 MOHON IZIN ABANG SUMBER, sumber bisa bertambah, req/dm rekomendasi situs yang bagus
 
 1. otakudesu: https://otakudesu.cloud
-2. samehadaku: https://samehadaku.email
+2. samehadaku: https://samehadaku.name
 
 - domain sering berubah jangan lupa pantau terus untuk edit url ada di di "src/configs/animeConfig.ts"
 
