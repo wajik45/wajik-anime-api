@@ -41,7 +41,7 @@ const samehadakuInfo = {
     title: "Samehadaku",
     baseUrl: baseUrl.samehadaku,
     baseUrlPath: "/samehadaku",
-    message: "di vercel 403 forbidden, di local aman, mungkin non serverless juga aman",
+    message: "🔥🔥",
     ok: true,
     routesView: [
         {

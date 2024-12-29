@@ -4,7 +4,7 @@ const animeConfig = {
     PORT: 3001,
     baseUrl: {
         otakudesu: "https://otakudesu.cloud",
-        samehadaku: "https://samehadaku.name",
+        samehadaku: "https://samehadaku.ws",
     },
     response: {
         href: true,
