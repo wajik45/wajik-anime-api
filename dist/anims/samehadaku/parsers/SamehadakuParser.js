@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dataFetcher_1 = require("../../../services/dataFetcher");
 const error_1 = require("../../../helpers/error");
 const SamehadakuParserExtra_1 = __importDefault(require("./SamehadakuParserExtra"));
-const samehadakuInfo_1 = __importDefault(require("../info/samehadakuInfo"));
 const path_1 = __importDefault(require("path"));
 class SamehadakuParser extends SamehadakuParserExtra_1.default {
     parseHome() {
@@ -314,7 +313,7 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
                 const postData = el.attr("data-post");
                 const numeData = el.attr("data-nume");
                 const typeData = el.attr("data-type");
-                const result = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
+                const result = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, this.baseUrl, {
                     method: "POST",
                     responseType: "text",
                     data: new URLSearchParams({
@@ -460,7 +459,7 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
         const post = serverIdArr[0];
         const nume = serverIdArr[1];
         const type = serverIdArr[2];
-        const url = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
+        const url = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, this.baseUrl, {
             method: "POST",
             responseType: "text",
             data: new URLSearchParams({
@@ -475,18 +474,16 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
         });
         data.url = this.generateSrcFromIframeTag(url);
         if (data.url.includes("api.wibufile.com")) {
-            data.url = originUrl + path_1.default.join("/", this.baseUrlPath, `wibufile?url=${data.url}`).replace(/\\/g, "/");
+            data.url =
+                originUrl +
+                    path_1.default.join("/", this.baseUrlPath, `wibufile?url=${data.url}`).replace(/\\/g, "/");
         }
         const isEmpty = !data.url || data.url === "No iframe found";
         this.checkEmptyData(isEmpty);
         return data;
     }
     parseWibuFile(url) {
-        return (0, dataFetcher_1.wajikFetch)(url, {
-            headers: {
-                Referer: samehadakuInfo_1.default.baseUrl,
-            },
-        });
+        return (0, dataFetcher_1.wajikFetch)(url, this.baseUrl);
     }
     parseAnimeBatch(batchId) {
         return this.scrape({

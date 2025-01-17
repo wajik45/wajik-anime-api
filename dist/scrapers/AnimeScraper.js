@@ -149,7 +149,7 @@ class AnimeScraper {
     }
     async scrape(props, parser) {
         const path = this.generateUrlPath([props.path]);
-        const htmlData = await (0, dataFetcher_1.wajikFetch)(this.baseUrl + path, {
+        const htmlData = await (0, dataFetcher_1.wajikFetch)(this.baseUrl + path, this.baseUrl, {
             method: "GET",
             responseType: "text",
             ...props.axiosConfig,

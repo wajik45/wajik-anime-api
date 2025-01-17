@@ -195,7 +195,7 @@ export default class OtakudesuParserExtra extends AnimeScraper {
 
                 otakudesuUrls.push(this.baseUrl + "?p=" + query);
               } else {
-                const originalUrl = await getFinalUrl(otakudesuUrl);
+                const originalUrl = await getFinalUrl(otakudesuUrl, this.baseUrl);
 
                 if (originalUrl.includes("?p=")) {
                   if (!originalUrl.includes(this.baseUrl)) {
@@ -209,7 +209,7 @@ export default class OtakudesuParserExtra extends AnimeScraper {
               }
             }
 
-            const originalUrls = await getFinalUrls(otakudesuUrls, {
+            const originalUrls = await getFinalUrls(otakudesuUrls, this.baseUrl, {
               axiosConfig: { timeout: 10000 },
               retryConfig: { delay: 100, retries: 2 },
             });

@@ -5,6 +5,7 @@ const userAgent =
 
 export async function wajikFetch(
   url: string,
+  ref: string,
   axiosConfig?: AxiosRequestConfig<any>,
   callback?: (response: AxiosResponse) => void
 ): Promise<any> {
@@ -12,6 +13,7 @@ export async function wajikFetch(
     ...axiosConfig,
     headers: {
       "User-Agent": userAgent,
+      Referer: ref,
       ...axiosConfig?.headers,
     },
   });
@@ -25,12 +27,14 @@ export async function wajikFetch(
 
 export async function getFinalUrl(
   url: string,
+  ref: string,
   axiosConfig?: AxiosRequestConfig<any>
 ): Promise<any> {
   const response = await axios.head(url, {
     ...axiosConfig,
     headers: {
       "User-Agent": userAgent,
+      Referer: ref,
       ...axiosConfig?.headers,
     },
     maxRedirects: 0,
@@ -48,6 +52,7 @@ export async function getFinalUrl(
 
 export async function getFinalUrls(
   urls: string[],
+  ref: string,
   config: {
     axiosConfig?: AxiosRequestConfig<any>;
     retryConfig?: {
@@ -61,7 +66,7 @@ export async function getFinalUrls(
   const retryRequest = async (url: string): Promise<any> => {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        return await getFinalUrl(url, config.axiosConfig);
+        return await getFinalUrl(url, ref, config.axiosConfig);
       } catch (error) {
         if (attempt === retries) throw error;
 

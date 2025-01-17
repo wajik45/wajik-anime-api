@@ -313,7 +313,7 @@ class OtakudesuParser extends OtakudesuParserExtra_1.default {
             const serverElements = $(".mirrorstream ul").toArray();
             const nonceCacheKey = "otakudesuNonce";
             if (!lruCache_1.cache.get(nonceCacheKey)) {
-                const nonce = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
+                const nonce = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, this.baseUrl, {
                     method: "POST",
                     responseType: "json",
                     data: new URLSearchParams({
@@ -424,7 +424,7 @@ class OtakudesuParser extends OtakudesuParserExtra_1.default {
         const nonceCacheKey = "otakudesuNonce";
         const serverIdArr = this.derawr(serverId).split("-");
         const getUrlData = async (nonce) => {
-            return await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
+            return await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, this.baseUrl, {
                 method: "POST",
                 responseType: "json",
                 data: new URLSearchParams({
@@ -447,7 +447,7 @@ class OtakudesuParser extends OtakudesuParserExtra_1.default {
         }
         catch (error) {
             if (error.status === 403) {
-                const nonce = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
+                const nonce = await (0, dataFetcher_1.wajikFetch)(`${this.baseUrl}/wp-admin/admin-ajax.php`, this.baseUrl, {
                     method: "POST",
                     responseType: "json",
                     data: new URLSearchParams({

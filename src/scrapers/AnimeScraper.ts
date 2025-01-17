@@ -185,7 +185,7 @@ export default class AnimeScraper {
     parser: ($: CheerioAPI, data: T) => Promise<T>
   ): Promise<T> {
     const path = this.generateUrlPath([props.path]);
-    const htmlData = await wajikFetch(this.baseUrl + path, {
+    const htmlData = await wajikFetch(this.baseUrl + path, this.baseUrl, {
       method: "GET",
       responseType: "text",
       ...props.axiosConfig,

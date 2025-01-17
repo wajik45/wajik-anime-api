@@ -4,7 +4,6 @@ import type { Server } from "@interfaces/IGlobal";
 import { wajikFetch } from "@services/dataFetcher";
 import { setResponseError } from "@helpers/error";
 import SamehadakuParserExtra from "./SamehadakuParserExtra";
-import samehadakuInfo from "@samehadaku/info/samehadakuInfo";
 import path from "path";
 
 export default class SamehadakuParser extends SamehadakuParserExtra {
@@ -434,7 +433,7 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
           const numeData = el.attr("data-nume");
           const typeData = el.attr("data-type");
 
-          const result = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, {
+          const result = await wajikFetch(`${this.baseUrl}/wp-admin/admin-ajax.php`, this.baseUrl, {
             method: "POST",
             responseType: "text",
             data: new URLSearchParams({
@@ -621,6 +620,7 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
 
     const url = await wajikFetch(
       `${this.baseUrl}/wp-admin/admin-ajax.php`,
+      this.baseUrl,
       {
         method: "POST",
         responseType: "text",
@@ -639,7 +639,9 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
     data.url = this.generateSrcFromIframeTag(url);
 
     if (data.url.includes("api.wibufile.com")) {
-      data.url = originUrl + path.join("/", this.baseUrlPath, `wibufile?url=${data.url}`).replace(/\\/g, "/");
+      data.url =
+        originUrl +
+        path.join("/", this.baseUrlPath, `wibufile?url=${data.url}`).replace(/\\/g, "/");
     }
 
     const isEmpty = !data.url || data.url === "No iframe found";
@@ -650,11 +652,7 @@ export default class SamehadakuParser extends SamehadakuParserExtra {
   }
 
   parseWibuFile(url: string): Promise<any> {
-    return wajikFetch(url, {
-      headers: {
-        Referer: samehadakuInfo.baseUrl,
-      },
-    });
+    return wajikFetch(url, this.baseUrl);
   }
 
   parseAnimeBatch(batchId: string): Promise<ISP.AnimeBatch> {
