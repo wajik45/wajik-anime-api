@@ -12,7 +12,7 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
         return this.scrape({
             path: "/",
             initialData: {
-                recent: { href: "", samehadakuUrl: "", episodeList: [] },
+                recent: { href: "", samehadakuUrl: "", animeList: [] },
                 batch: { href: "", samehadakuUrl: "", batchList: [] },
                 movie: { href: "", samehadakuUrl: "", animeList: [] },
             },
@@ -27,8 +27,8 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
             animeWrapperElements.forEach((animeWrapperEl, index) => {
                 const animeElements = $(animeWrapperEl).find("ul li").toArray();
                 animeElements.forEach((animeEl) => {
-                    const card = this.parseAnimeCard1($(animeEl), index === 0 ? "episode" : "batch");
-                    (index === 0 ? data.recent.episodeList : data.batch.batchList).push(card);
+                    const card = this.parseAnimeCard1($(animeEl), index === 0 ? "anime" : "batch");
+                    (index === 0 ? data.recent.animeList : data.batch.batchList).push(card);
                 });
             });
             const animeMovieElements = $(".widgetseries ul li").toArray();
@@ -38,7 +38,7 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
                     data.movie.animeList.push(card);
                 }
             });
-            const isEmpty = data.recent.episodeList.length === 0 &&
+            const isEmpty = data.recent.animeList.length === 0 &&
                 data.batch.batchList.length === 0 &&
                 data.movie.animeList.length === 0;
             this.checkEmptyData(isEmpty);
@@ -122,18 +122,18 @@ class SamehadakuParser extends SamehadakuParserExtra_1.default {
             return data;
         });
     }
-    parseRecentEpisodes(page) {
+    parseRecentAnime(page) {
         return this.scrape({
             path: `/anime-terbaru/page/${page}`,
-            initialData: { data: { episodeList: [] } },
+            initialData: { data: { animeList: [] } },
         }, async ($, { data, pagination }) => {
             const animeElements = $(".post-show ul li").toArray();
             animeElements.forEach((animeElement) => {
-                const card = this.parseAnimeCard1($(animeElement), "episode");
-                data.episodeList.push(card);
+                const card = this.parseAnimeCard1($(animeElement), "anime");
+                data.animeList.push(card);
             });
             pagination = this.parsePagination($);
-            const isEmpty = data.episodeList.length === 0;
+            const isEmpty = data.animeList.length === 0;
             this.checkEmptyData(isEmpty);
             return { data, pagination };
         });

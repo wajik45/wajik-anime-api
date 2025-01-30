@@ -11,7 +11,7 @@ class SamehadakuParserExtra extends AnimeScraper_1.default {
             poster: "",
             episodes: "",
             releasedOn: "",
-            episodeId: undefined,
+            animeId: undefined,
             batchId: undefined,
             href: "",
             samehadakuUrl: "",
@@ -27,9 +27,9 @@ class SamehadakuParserExtra extends AnimeScraper_1.default {
             .replace("released on:", "")
             .trim();
         data.samehadakuUrl = this.generateSourceUrl(oriUrl);
-        if (to === "episode") {
-            data.episodeId = this.generateSlug(oriUrl);
-            data.href = this.generateHref(to, data.episodeId);
+        if (to === "anime") {
+            data.animeId = this.generateSlug(oriUrl);
+            data.href = this.generateHref(to, data.animeId);
         }
         else {
             data.batchId = this.generateSlug(oriUrl);

@@ -6,7 +6,7 @@ export interface Home {
   recent: {
     href?: string;
     samehadakuUrl?: string;
-    episodeList: ISPE.AnimeCard1[];
+    animeList: ISPE.AnimeCard1[];
   };
   batch: {
     href?: string;
@@ -39,7 +39,7 @@ export interface Schedule {
 }
 
 export interface RecentEpisodes {
-  data: { episodeList: ISPE.AnimeCard1[] };
+  data: { animeList: ISPE.AnimeCard1[] };
   pagination?: Pagination;
 }
 

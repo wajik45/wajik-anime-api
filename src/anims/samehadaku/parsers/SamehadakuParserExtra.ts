@@ -6,13 +6,13 @@ import type { Format, Quality, Url } from "@interfaces/IGlobal";
 import AnimeScraper from "@scrapers/AnimeScraper";
 
 export default class SamehadakuParserExtra extends AnimeScraper {
-  protected parseAnimeCard1(el: Cheerio<Element>, to: "episode" | "batch"): ISPE.AnimeCard1 {
+  protected parseAnimeCard1(el: Cheerio<Element>, to: "anime" | "batch"): ISPE.AnimeCard1 {
     const data: ISPE.AnimeCard1 = {
       title: "",
       poster: "",
       episodes: "",
       releasedOn: "",
-      episodeId: undefined,
+      animeId: undefined,
       batchId: undefined,
       href: "",
       samehadakuUrl: "",
@@ -31,9 +31,9 @@ export default class SamehadakuParserExtra extends AnimeScraper {
       .trim();
     data.samehadakuUrl = this.generateSourceUrl(oriUrl);
 
-    if (to === "episode") {
-      data.episodeId = this.generateSlug(oriUrl);
-      data.href = this.generateHref(to, data.episodeId);
+    if (to === "anime") {
+      data.animeId = this.generateSlug(oriUrl);
+      data.href = this.generateHref(to, data.animeId);
     } else {
       data.batchId = this.generateSlug(oriUrl);
       data.href = this.generateHref(to, data.batchId);

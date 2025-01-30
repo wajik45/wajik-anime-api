@@ -37,7 +37,7 @@ const samehadakuInfo: AnimeSource = {
       route: "/schedule",
     },
     {
-      title: "Episode terbaru",
+      title: "Anime terbaru",
       route: "/recent",
       queryParams: [par.pageQueryParam],
     },

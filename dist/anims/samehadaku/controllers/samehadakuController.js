@@ -70,7 +70,7 @@ const samehadakuController = {
     async getRecentEpisodes(req, res, next) {
         try {
             const page = (0, queryParams_1.getPageParam)(req);
-            const { data, pagination } = await parser.parseRecentEpisodes(page);
+            const { data, pagination } = await parser.parseRecentAnime(page);
             res.json((0, payload_1.default)(res, { data, pagination }));
         }
         catch (error) {
