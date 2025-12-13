@@ -1,31 +1,22 @@
-import { clientCache } from "@middlewares/cache";
-import { otakudesuInfo, otakudesuRoute } from "@otakudesu/index";
-import { samehadakuInfo, samehadakuRoute } from "@samehadaku/index";
-import mainRoute from "@routes/mainRoute";
-import errorHandler from "@middlewares/errorHandler";
-import animeConfig from "@configs/animeConfig";
-import path from "path";
+import { clientCache } from "@middlewares/cache.js";
+import appConfig from "@configs/app.config.js";
 import express from "express";
-import cors from "cors";
+import errorHandler from "@middlewares/errorHandler.js";
+import otakudesuRouter from "@routes/otakudesu.routes.js";
+import samehadakuRouter from "@routes/samehadaku.routes.js";
+import kuramanimeRouter from "@routes/kuramanime.routes.js";
 
-const { PORT } = animeConfig;
+const { PORT } = appConfig;
 const app = express();
 
-// MIDDLEWARES
-app.use(cors());
-app.use(express.static(path.join(__dirname, "public")));
 app.use(clientCache(1));
 
-// RUTE SUMBER
-app.use(otakudesuInfo.baseUrlPath, otakudesuRoute);
-app.use(samehadakuInfo.baseUrlPath, samehadakuRoute);
+app.use("/otakudesu", otakudesuRouter);
+app.use("/kuramanime", kuramanimeRouter);
+app.use("/samehadaku", samehadakuRouter);
 
-// RUTE UTAMA
-app.use(mainRoute);
-
-// ERROR HANDLER
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`SERVER BERJALAN DI http://localhost:${PORT}`);
+  console.log(`server is running on http://localhost:${PORT}`);
 });

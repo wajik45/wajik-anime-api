@@ -1,67 +1,51 @@
 import type { Request, Response, NextFunction } from "express";
-import { type Payload } from "@helpers/payload";
-import { defaultTTL, cache } from "@libs/lruCache";
+import { LRUCache } from "lru-cache";
 import path from "path";
 
+const defaultTTL = 1000 * 60 * 60 * 12;
+const lruCache = new LRUCache({
+  max: 100,
+  allowStale: false,
+  updateAgeOnGet: false,
+  updateAgeOnHas: false,
+  ttl: defaultTTL,
+});
+
 /**
- * @param ttl minutes
+ * @param ttl minutes, default = 720
  */
-export function serverCache(ttl?: number, responseType: "json" | "text" = "json") {
+export function serverCache(ttl?: number) {
   return (req: Request, res: Response, next: NextFunction) => {
     const newTTL = ttl ? 1000 * 60 * ttl : defaultTTL;
     const key = path.join(req.originalUrl, "/").replace(/\\/g, "/");
-    const cachedData = cache.get(key);
+    const cachedData = lruCache.get(key);
 
     if (cachedData) {
       // console.log("hit");
 
-      if (typeof cachedData === "object") {
-        // console.log("ini object");
+      res.json(cachedData);
 
-        return res.json(cachedData);
-      }
-
-      if (typeof cachedData === "string") {
-        // console.log("ini string");
-
-        return res.send(cachedData);
-      }
-
-      // console.log("ini bukan object / string");
-
-      return res.send(String(cachedData));
+      return;
     }
 
     // console.log("miss");
 
-    if (responseType === "json") {
-      const originalJson = res.json.bind(res);
+    const originalJson = res.json.bind(res);
 
-      res.json = (body: Payload) => {
-        if (res.statusCode < 399 && body.ok) {
-          cache.set(key, body, { ttl: newTTL });
-        }
+    res.json = (body: IPayload) => {
+      if (res.statusCode < 399) {
+        lruCache.set(key, body, { ttl: newTTL });
+      }
 
-        return originalJson(body);
-      };
-    } else {
-      const originalSend = res.send.bind(res);
-
-      res.send = (body: any) => {
-        if (res.statusCode < 399) {
-          cache.set(key, body, { ttl: newTTL });
-        }
-
-        return originalSend(body);
-      };
-    }
+      return originalJson(body);
+    };
 
     next();
   };
 }
 
 /**
- * @param maxAge minutes
+ * @param maxAge minutes, default = 1
  */
 export function clientCache(maxAge?: number) {
   return (req: Request, res: Response, next: NextFunction) => {
