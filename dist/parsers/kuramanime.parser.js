@@ -26,7 +26,7 @@ const kuramanimeParser = {
         };
         const homeElems = document.querySelectorAll(".product.spad .trending__product");
         homeElems.forEach((homeEl, index) => {
-            const kuronimeUrl = AnimeSrc(homeEl.querySelector(".btn__all a"));
+            const kuramanimeUrl = AnimeSrc(homeEl.querySelector(".btn__all a"));
             const animeElems = homeEl.querySelectorAll(".row .product__item");
             const animeList = animeElems.map((animeEl) => {
                 const animeCard = kuramanimeExtraParser.parseAnimeCard(animeEl);
@@ -37,7 +37,7 @@ const kuramanimeParser = {
                 return episodeCard;
             });
             const key = index === 0 ? "ongoing" : index === 1 ? "completed" : "movie";
-            home[key].kuramanimeUrl = kuronimeUrl;
+            home[key].kuramanimeUrl = kuramanimeUrl;
             home[index === 1 ? "completed" : "movie"].animeList = animeList;
             if (index === 0) {
                 home.ongoing.episodeList = episodeList;
