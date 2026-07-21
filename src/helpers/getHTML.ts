@@ -8,7 +8,7 @@ export default async function getHTML(
   baseUrl: string,
   pathname: string,
   ref?: string,
-  sanitize = false
+  sanitize = false,
 ): Promise<string> {
   const url = new URL(pathname, baseUrl);
   const headers: Record<string, string> = {

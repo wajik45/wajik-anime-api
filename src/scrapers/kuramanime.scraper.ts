@@ -6,7 +6,8 @@ const { baseUrl } = kuramanimeConfig;
 
 const kuramanimeScraper = {
   async scrapeDOM(pathname: string, ref?: string, sanitize: boolean = false): Promise<HTMLElement> {
-    const html = await getHTML(baseUrl, pathname, ref, sanitize);
+    const { url } = await fetch(baseUrl);
+    const html = await getHTML(url, pathname, ref, sanitize);
     const document = parse(html, {
       parseNoneClosedTags: true,
     });
@@ -15,7 +16,8 @@ const kuramanimeScraper = {
   },
 
   async scrapeSecret(ref?: string): Promise<string> {
-    const text = await getHTML(baseUrl, "/assets/Ks6sqSgloPTlHMl.txt", ref);
+    const { url } = await fetch(baseUrl);
+    const text = await getHTML(url, "/assets/Ks6sqSgloPTlHMl.txt", ref);
 
     return text;
   },

@@ -7,7 +7,8 @@ REST API streaming dan download Anime subtitle Indonesia dari berbagai sumber
 API ini unofficial jadi ga ada kaitan dengan sumber yang tersedia...
 
 1. otakudesu: https://otakudesu.best
-2. kuramanime: https://v8.kuramanime.tel
+2. kuramanime: https://kuramanime.tel
+3. oploverz: https://oploverz.am
 
 - domain sering berubah jangan lupa pantau terus untuk edit url ada di di "src/configs/{source}.config.ts"
 

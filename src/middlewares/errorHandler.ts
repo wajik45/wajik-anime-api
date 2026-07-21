@@ -35,7 +35,7 @@ export default function errorHandler(
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void {
   if (err instanceof ValiError) {
     res.status(400).json(setPayload(res, { message: err.issues[0]?.message }));
@@ -57,6 +57,6 @@ export default function errorHandler(
     setPayload(res, {
       // message: `Terjadi kesalahan tak terduga. Request ID: ${uuid}`,
       message: `Terjadi kesalahan tak terduga`,
-    })
+    }),
   );
 }

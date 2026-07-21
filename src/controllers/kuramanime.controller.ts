@@ -183,7 +183,7 @@ const kuramanimeController = {
       setPayload(res, {
         message: "Status: OK 🚀",
         data: { routes },
-      })
+      }),
     );
   },
 
@@ -211,8 +211,8 @@ const kuramanimeController = {
         (query?.sort === "a-z"
           ? "ascending"
           : query?.sort === "z-a"
-          ? "descending"
-          : query?.sort) || (status === "ongoing" ? "updated" : "latest");
+            ? "descending"
+            : query?.sort) || (status === "ongoing" ? "updated" : "latest");
 
       function getPathname() {
         if (status) {
@@ -268,7 +268,7 @@ const kuramanimeController = {
     try {
       const { propertyType, propertyId } = v.parse(
         kuramanimeSchema.param.animesByPropertyId,
-        req.params
+        req.params,
       );
       const query = v.parse(kuramanimeSchema.query.animesByPropertyId, req.query);
       const page = Number(query?.page) || 1;
@@ -276,8 +276,8 @@ const kuramanimeController = {
         (query?.sort === "a-z"
           ? "ascending"
           : query?.sort === "z-a"
-          ? "descending"
-          : query?.sort) || "latest";
+            ? "descending"
+            : query?.sort) || "latest";
       const pathname = `/properties/${propertyType}/${propertyId}?order_by=${sort}&page=${page}`;
       const document = await kuramanimeScraper.scrapeDOM(pathname, baseUrl);
       const animeList = kuramanimeParser.parseAnimes(document);
