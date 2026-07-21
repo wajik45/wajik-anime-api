@@ -1,4 +1,4 @@
 const otakudesuConfig = {
-    baseUrl: "https://otakudesu.best",
+    baseUrl: "https://otakudesu.blog",
 };
 export default otakudesuConfig;
